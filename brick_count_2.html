@@ -1,0 +1,159 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="myApp" ng-controller="myController">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+	<script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+	<script type="text/javascript">
+		var jq=jQuery.noConflict();
+	</script>
+	<script type="text/javascript" src="/test/lib/angular-1.5.2/angular.js"></script>
+
+	<style type="text/css">
+
+		body{padding:30px;}
+
+	</style>
+
+</head>
+<body>
+
+	<div style="margin-bottom: 20px;background:lightgray;">
+		<svg width="800" height="500" data-ng-attr-style="position: relative;left: {{-m.trape_bottom_x}}px;overflow:visible;">
+			<polygon data-ng-attr-points="{{m.ax}},{{m.ay}} {{m.bx}},{{m.by}} {{m.cx}},{{m.cy}} {{m.dx}},{{m.dy}}" style="fill:lime;stroke:purple;stroke-width:1" />
+			<polygon ng-repeat="solar in m.solars" data-ng-attr-points="
+				{{solar.x}},{{solar.y}} 
+				{{solar.x+m.solar_width}},{{solar.y}} 
+				{{solar.x+m.solar_width}},{{solar.y+m.solar_height}} 
+				{{solar.x}},{{solar.y+m.solar_height}}" 
+				style="fill:rgba(128,128,128,.8);stroke:black;stroke-width:1" />
+		</svg>
+	</div>
+
+	梯形屋顶：<br>
+	顶边：<input type="number" name="" ng-model="m.trape_top_width">
+	底边：<input type="number" name="" ng-model="m.trape_bottom_width">
+	底边偏移：<input type="number" name="" ng-model="m.trape_bottom_x">
+	高：<input type="number" name="" ng-model="m.trape_height">
+
+	<br><br>
+
+	太阳能板：<br>
+	宽：<input type="number" name="" ng-model="m.solar_width">
+	高：<input type="number" name="" ng-model="m.solar_height">
+
+	<br><br>
+
+	<button ng-click="submit()">提交</button>
+
+	<span> 共计 {{m.solars.length}} 块太阳能板</span>
+
+
+
+	<script type="text/javascript">
+
+		angular.module('myApp',[])
+		.controller('myController',function($scope){
+			
+			// init
+				var $s=$scope;
+				window.scope=$s;
+				$s.m={};
+				var $m=$s.m;
+				$m.a=100;
+				var area_width=500;
+				var area_height=500;
+				$m.solars=[];
+
+			// fn
+				$s.submit=function(){
+					if($m.trape_top_width<=$m.trape_bottom_width){
+
+						$m.solars=[];
+
+						$m.ax=0;
+						$m.ay=0;
+
+						$m.bx=$m.trape_top_width;
+						$m.by=0;
+
+						$m.cx=$m.trape_bottom_width+$m.trape_bottom_x;
+						$m.cy=$m.trape_height;
+
+						$m.dx=$m.trape_bottom_x;
+						$m.dy=$m.trape_height;
+
+						square_width=Math.min($m.bx,$m.cx);
+
+						var row=Math.floor($m.trape_height/$m.solar_height);
+
+						// square
+						for(var i=0;i<row;i++){
+							var col=Math.floor(square_width/$m.solar_width);
+							for(var j=0;j<col;j++){
+								$m.solars.push({
+									x:j*$m.solar_width+$m.ax,
+									y:$m.trape_height-(i+1)*$m.solar_height,
+								})
+							}
+						}
+						// /square
+
+						// right
+						// for(var i=0;i<row;i++){
+						// 	var x=
+						// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
+						// 		($m.trape_height)*
+						// 		($m.solar_height*j)
+						// 		;
+						// 	var row_width=$m.trape_bottom_width-x*2;
+						// 	var col=Math.floor(row_width/$m.solar_width);
+						// 	for(var j=0;j<col;j++){
+						// 		$m.solars.push({
+						// 			x:$m.solar_width*j+x,
+						// 			y:$m.trape_height-(i+1)*$m.solar_height,
+						// 		})
+						// 	}
+						// }
+						// /right
+
+
+						// for(var j=1;j<=$m.trape_height/$m.solar_height;j++){
+
+						// 	var x=
+						// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
+						// 		($m.trape_height)*
+						// 		($m.solar_height*j)
+						// 		;
+						// 	var width=$m.trape_bottom_width-x*2;
+
+						// 	for(var i=0;i<width/$m.solar_width-1;i++){
+						// 		$m.solars.push({
+						// 			x:($m.solar_width*i+x),
+						// 			y:$m.trape_height-$m.solar_height*j,
+						// 		})
+						// 	}
+						// }
+					}
+				}
+
+			// init
+				$m.trape_top_width=320;
+				$m.trape_bottom_width=500;
+				$m.trape_bottom_x=-50;
+				$m.trape_height=200;
+				$m.solar_width=30;
+				$m.solar_height=15;
+				$s.submit();
+
+		})
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="myApp" ng-controller="myController">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+	<script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+	<script type="text/javascript">
+		var jq=jQuery.noConflict();
+	</script>
+	<script type="text/javascript" src="/test/lib/angular-1.5.2/angular.js"></script>
+
+	<style type="text/css">
+
+		body{padding:30px;}
+
+	</style>
+
+</head>
+<body>
+
+	<div style="margin-bottom: 20px;">
+		<svg width="800" height="500">
+			<polygon data-ng-attr-points="{{m.ax}},{{m.ay}} {{m.bx}},{{m.by}} {{m.cx}},{{m.cy}} {{m.dx}},{{m.dy}}" style="fill:lime;stroke:purple;stroke-width:1" />
+			<polygon ng-repeat="solar in m.solars" data-ng-attr-points="
+				{{solar.x}},{{solar.y}} 
+				{{solar.x+m.solar_width}},{{solar.y}} 
+				{{solar.x+m.solar_width}},{{solar.y+m.solar_height}} 
+				{{solar.x}},{{solar.y+m.solar_height}}" style="fill:gray;stroke:black;stroke-width:1" />
+		</svg>
+	</div>
+
+	<div>目前只支持顶边小于等于底边</div><br>
+
+	梯形屋顶：<br>
+	顶边：<input type="number" name="" ng-model="m.top">
+	底边：<input type="number" name="" ng-model="m.bottom">
+	高：<input type="number" name="" ng-model="m.height">
+
+	<br><br>
+
+	太阳能板：<br>
+	宽：<input type="number" name="" ng-model="m.solar_width">
+	高：<input type="number" name="" ng-model="m.solar_height">
+
+	<br><br>
+
+	<button ng-click="submit()">提交</button>
+
+	<span> 共计 {{m.solars.length}} 块太阳能板</span>
+
+
+
+	<script type="text/javascript">
+
+		angular.module('myApp',[])
+		.controller('myController',function($scope){
+			
+			// init
+				var $s=$scope;
+				window.scope=$s;
+				$s.m={};
+				var $m=$s.m;
+				$m.a=100;
+				var area_width=500;
+				var area_height=500;
+				$m.solars=[];
+
+			// fn
+				$s.submit=function(){
+					if($m.top<=$m.bottom){
+
+						$m.solars=[];
+
+						$m.ax=($m.bottom-$m.top)/2;
+						$m.ay=0;
+
+						$m.bx=($m.bottom-$m.top)/2+$m.top;
+						$m.by=0;
+
+						$m.cx=$m.bottom;
+						$m.cy=$m.height;
+
+						$m.dx=0;
+						$m.dy=$m.height;
+
+
+						for(var j=1;j<=$m.height/$m.solar_height;j++){
+
+							var x=
+								(($m.bottom-$m.top)/2)/
+								($m.height)*
+								($m.solar_height*j)
+								;
+							var width=$m.bottom-x*2;
+
+							for(var i=0;i<width/$m.solar_width-1;i++){
+								$m.solars.push({
+									x:($m.solar_width*i+x),
+									y:$m.height-$m.solar_height*j,
+								})
+							}
+						}
+					}
+				}
+
+			// init
+				$m.top=300;
+				$m.bottom=500;
+				$m.height=200;
+				$m.solar_width=30;
+				$m.solar_height=15;
+				$s.submit();
+
+		})
+
+	</script>
+
+</body>
+</html>

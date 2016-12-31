@@ -1,0 +1,108 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="ng_app" ng-controller="all_ctrl">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+  <script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+  <script type="text/javascript">
+    var jq=jQuery.noConflict();
+  </script>
+  <script type="text/javascript" src="/test/lib/angular-1.5.2/angular.js"></script>
+
+  <style type="text/css">
+
+    html,body,.main,svg.polygon{width: 100%;height: 100%;}
+    svg{position: absolute;top:0;left: 0;}
+    .main{position: relative;}
+    .dot{width: 10px;height: 10px;border-radius: 50%;background: red;position: absolute;cursor: move;top:0;left: 0;}
+
+  </style>
+
+</head>
+<body>
+
+  <div class="main">
+    <div gv-trapezoid></div>
+  </div>
+
+
+
+  <script type="text/javascript">
+
+    var ecstore={};
+    ecstore.scope={};
+
+    angular.module('ng_app',[])
+    .controller('all_ctrl',function($scope){
+
+      // init
+      var $s=$scope;
+      ecstore.scope.all_ctrl=$s;
+      $s.m={};
+      var $m=$s.m;
+
+      // fn
+
+      // init
+      $s.set_polygon($m.trape);
+
+
+
+    })
+    .directive('gvTrapezoid', ['$document', function($document) {
+      return {
+        link: function(scope, element, attr) {
+          var startX = 0, startY = 0, x = 0, y = 0;
+          var trape={
+            x:300,
+            y:300,
+            d1:{x:0,y:0},
+            d2:{x:100,y:0},
+            d3:{x:120,y:80},
+            d4:{x:-20,y:80},
+            rotate:0,
+          }
+          var set_polygon=function(trape){
+            trape.polygon=(trape.d1.x+trape.x)+','+(trape.d1.y+trape.y)+' '+(trape.d2.x+trape.x)+','+(trape.d2.y+trape.y)+' '+(trape.d3.x+trape.x)+','+(trape.d3.y+trape.y)+' '+(trape.d4.x+trape.x)+','+(trape.d4.y+trape.y);
+          }
+
+          element.on('mousedown', function(event) {
+            // console.log(1);
+            // Prevent default dragging of selected content
+            event.preventDefault();
+            startX = event.pageX;
+            startY = event.pageY;
+            $document.on('mousemove', mousemove);
+            $document.on('mouseup', mouseup);
+          });
+
+          function mousemove(event) {
+            // console.log(2);
+            x = event.pageX - startX;
+            y = event.pageY - startY;
+            startX = event.pageX;
+            startY = event.pageY;
+            element[0].setAttribute('cx',parseInt(element[0].getAttribute('cx'))+x);
+            element[0].setAttribute('cy',parseInt(element[0].getAttribute('cy'))+y);
+            console.log(x+' , '+y);
+          }
+
+          function mouseup() {
+            // console.log(3);
+            $document.off('mousemove', mousemove);
+            $document.off('mouseup', mouseup);
+          }
+        },
+        templateUrl:'trapezoid.html',
+      };
+    }]);
+
+  </script>
+
+</body>
+</html>

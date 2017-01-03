@@ -24,14 +24,14 @@
 <body>
 
 	<div style="margin-bottom: 20px;background:lightgray;">
-		<svg width="800" height="500" data-ng-attr-style="position: relative;left: {{-m.trape_bottom_x}}px;overflow:visible;">
+		<svg width="800" height="500" data-ng-attr-style="position: relative;left: {{m.trape_bottom_x<0?-m.trape_bottom_x:0}}px;overflow:visible;">
 			<polygon data-ng-attr-points="{{m.ax}},{{m.ay}} {{m.bx}},{{m.by}} {{m.cx}},{{m.cy}} {{m.dx}},{{m.dy}}" style="fill:lime;stroke:purple;stroke-width:1" />
 			<polygon ng-repeat="solar in m.solars" data-ng-attr-points="
 				{{solar.x}},{{solar.y}} 
 				{{solar.x+m.solar_width}},{{solar.y}} 
 				{{solar.x+m.solar_width}},{{solar.y+m.solar_height}} 
 				{{solar.x}},{{solar.y+m.solar_height}}" 
-				style="fill:rgba(128,128,128,.8);stroke:black;stroke-width:1" />
+				style="fill:rgba(128,128,128,.5);stroke:black;stroke-width:1" />
 		</svg>
 	</div>
 
@@ -57,6 +57,8 @@
 
 	<script type="text/javascript">
 
+		var log=console.log;
+
 		angular.module('myApp',[])
 		.controller('myController',function($scope){
 			
@@ -65,15 +67,18 @@
 				window.scope=$s;
 				$s.m={};
 				var $m=$s.m;
-				$m.a=100;
+				// $m.a=100;
 				var area_width=500;
 				var area_height=500;
 				$m.solars=[];
+				var square_left=0;
+				var square_right=0;
+				var square_solars_right=0;
 
 			// fn
 				$s.submit=function(){
-					if($m.trape_top_width<=$m.trape_bottom_width){
 
+					// init
 						$m.solars=[];
 
 						$m.ax=0;
@@ -88,64 +93,132 @@
 						$m.dx=$m.trape_bottom_x;
 						$m.dy=$m.trape_height;
 
-						square_width=Math.min($m.bx,$m.cx);
+						square_left=Math.max($m.ax,$m.dx);
+						square_right=Math.min($m.bx,$m.cx);
+						square_width=square_right-square_left;
 
-						var row=Math.floor($m.trape_height/$m.solar_height);
+						var row_count=Math.floor($m.trape_height/$m.solar_height);
 
-						// square
-						for(var i=0;i<row;i++){
-							var col=Math.floor(square_width/$m.solar_width);
-							for(var j=0;j<col;j++){
+					// square
+						for(var i=0;i<row_count;i++){
+							var col_count=Math.floor(square_width/$m.solar_width);
+							square_solars_right=square_left+col_count*$m.solar_width;
+							for(var j=0;j<col_count;j++){
 								$m.solars.push({
-									x:j*$m.solar_width+$m.ax,
+									x:square_left+j*$m.solar_width+$m.ax,
 									y:$m.trape_height-(i+1)*$m.solar_height,
 								})
 							}
 						}
-						// /square
+					// /square
 
-						// right
-						// for(var i=0;i<row;i++){
-						// 	var x=
-						// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
-						// 		($m.trape_height)*
-						// 		($m.solar_height*j)
-						// 		;
-						// 	var row_width=$m.trape_bottom_width-x*2;
-						// 	var col=Math.floor(row_width/$m.solar_width);
-						// 	for(var j=0;j<col;j++){
-						// 		$m.solars.push({
-						// 			x:$m.solar_width*j+x,
-						// 			y:$m.trape_height-(i+1)*$m.solar_height,
-						// 		})
-						// 	}
-						// }
-						// /right
+					// right
+						if($m.cx>$m.bx){
+							var right_triangle_bottom_width=$m.cx-$m.bx;
+							var blank_width=$m.bx-square_solars_right;
+							for(var i=0;i<row_count;i++){
+								var small_triangle_height=($m.trape_height-$m.solar_height*(i+1));
+								var small_triangle_width=
+									right_triangle_bottom_width
+									/$m.trape_height
+									*small_triangle_height
+									;
+								var row_width=small_triangle_width+blank_width;
+								var col_count=Math.floor(row_width/$m.solar_width);
+								for(var j=0;j<col_count;j++){
+									$m.solars.push({
+										x:square_solars_right+$m.solar_width*j,
+										y:small_triangle_height,
+									})
+								}
+							}
+						}
+						else{
+							var right_triangle_top_width=$m.bx-$m.cx;
+							var blank_width=$m.cx-square_solars_right;
+							for(var i=0;i<row_count;i++){
+								var small_triangle_height=$m.solar_height*i;
+								var small_triangle_width=
+									right_triangle_top_width
+									/$m.trape_height
+									*small_triangle_height
+									;
+								var row_width=small_triangle_width+blank_width;
+								var col_count=Math.floor(row_width/$m.solar_width);
+								for(var j=0;j<col_count;j++){
+									$m.solars.push({
+										x:square_solars_right+$m.solar_width*j,
+										y:$m.trape_height-small_triangle_height-$m.solar_height,
+									})
+								}
+							}
+						}
+					// /right
+
+					// left
+						if($m.ax>$m.dx){
+							var left_triangle_bottom_width=$m.ax-$m.dx;
+							for(var i=0;i<row_count;i++){
+								var small_triangle_height=($m.trape_height-$m.solar_height*(i+1));
+								var small_triangle_width=
+									left_triangle_bottom_width
+									/$m.trape_height
+									*small_triangle_height
+									;
+								var row_width=small_triangle_width;
+								var col_count=Math.floor(row_width/$m.solar_width);
+								for(var j=0;j<col_count;j++){
+									$m.solars.push({
+										x:-$m.solar_width*(j+1),
+										y:small_triangle_height,
+									})
+								}
+							}
+						}
+						else{
+							var left_triangle_top_width=$m.dx-$m.ax;
+							for(var i=0;i<row_count;i++){
+								var small_triangle_height=$m.solar_height*i;
+								var small_triangle_width=
+									left_triangle_top_width
+									/$m.trape_height
+									*small_triangle_height
+									;
+								var row_width=small_triangle_width;
+								var col_count=Math.floor(row_width/$m.solar_width);
+								for(var j=0;j<col_count;j++){
+									$m.solars.push({
+										x:square_left+-$m.solar_width*(j+1),
+										y:$m.trape_height-small_triangle_height-$m.solar_height,
+									})
+								}
+							}
+						}
+					// /left
 
 
-						// for(var j=1;j<=$m.trape_height/$m.solar_height;j++){
+					// for(var j=1;j<=$m.trape_height/$m.solar_height;j++){
 
-						// 	var x=
-						// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
-						// 		($m.trape_height)*
-						// 		($m.solar_height*j)
-						// 		;
-						// 	var width=$m.trape_bottom_width-x*2;
+					// 	var x=
+					// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
+					// 		($m.trape_height)*
+					// 		($m.solar_height*j)
+					// 		;
+					// 	var width=$m.trape_bottom_width-x*2;
 
-						// 	for(var i=0;i<width/$m.solar_width-1;i++){
-						// 		$m.solars.push({
-						// 			x:($m.solar_width*i+x),
-						// 			y:$m.trape_height-$m.solar_height*j,
-						// 		})
-						// 	}
-						// }
-					}
+					// 	for(var i=0;i<width/$m.solar_width-1;i++){
+					// 		$m.solars.push({
+					// 			x:($m.solar_width*i+x),
+					// 			y:$m.trape_height-$m.solar_height*j,
+					// 		})
+					// 	}
+					// }
 				}
 
 			// init
 				$m.trape_top_width=320;
-				$m.trape_bottom_width=500;
-				$m.trape_bottom_x=-50;
+				$m.trape_bottom_width=590;
+				$m.trape_bottom_x=-70;
 				$m.trape_height=200;
 				$m.solar_width=30;
 				$m.solar_height=15;

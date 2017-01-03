@@ -18,11 +18,11 @@
     html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
     .main{width: 1200px;height: 800px;}
     .main{position: relative;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
-    .dot{position:absolute;left:0;top:0;cursor: move;width:0;height: 0;border:solid;border-radius:50%;border-color:;}
-    .trapezoid{position: absolute;top:0;left: 0;overflow: visible;width: 100%;height: 100%;}
-    svg{overflow: visible;position: absolute;left: 0;top:0;width: 1px;height: 1px;cursor: pointer;}
+    .dot{position:absolute;left:0;top:0;cursor: move;width:0;height: 0;border:solid;border-radius:50%;border-color:;pointer-events: all;}
+    .trapezoid{position: absolute;top:0;left: 0;overflow: visible;width: 100%;height: 100%;pointer-events: none;}
+    svg{overflow: visible;position: absolute;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
     svg polygon{pointer-events: all;}
-    .label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+    .label{    position: absolute; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 
   </style>
 
@@ -32,7 +32,7 @@
   <div class="proto trapezoid" style="display: none;">
       <svg class="polygon">
         <polygon points="" style="fill:rgba(255,100,0,.5);" />
-        <line class="top" stroke-width="1" stroke="orange"></line>
+        <line class="top" stroke-width="1" stroke="red"></line>
         <line class="right" stroke-width="1" stroke="orange"></line>
         <line class="bottom" stroke-width="1" stroke="blue"></line>
         <line class="left" stroke-width="1" stroke="orange"></line>
@@ -45,8 +45,9 @@
 
   <div class="main">
     <div class="label">
-      双击添加新选区<br>
-      将以蓝色边为底边向上排列太阳能板
+      双击添加新选区。<br>
+      蓝边和红边始终相互平行。<br>
+      将以蓝边为底边向上排列太阳能板，因此请以蓝边为长边，红边为短边。
     </div>
   </div>
 
@@ -93,11 +94,11 @@
       jq(parent).append(self.dom);
     }
     Trapezoid.prototype.draw_trape=function(){
-      var self=this;
-      self.dom.css({
-        left:self.x+'px',
-        top:self.y+'px',
-      })
+      // var self=this;
+      // self.dom.find('polygon').css({
+      //   left:self.x+'px',
+      //   top:self.y+'px',
+      // })
     }
     Trapezoid.prototype.draw_polygon=function(){
       var self=this;
@@ -105,33 +106,33 @@
 
       for(var i=0;i<4;i++){
         // points+=(self.x+self['d'+i].x)+','+(self.y+self['d'+i].y)+' ';
-        points+=self['d'+i].x+','+self['d'+i].y+' ';
+        points+=(self.x+self['d'+i].x)+','+(self.y+self['d'+i].y)+' ';
       }
       self.dom.find('polygon').attr('points',points);
 
-      var top_edge=self.dom.find('.top');
-      top_edge.attr('x1',self.d0.x);
-      top_edge.attr('y1',self.d0.y);
-      top_edge.attr('x2',self.d1.x);
-      top_edge.attr('y2',self.d1.y);
+      var top_line=self.dom.find('.top');
+      top_line.attr('x1',self.x+self.d0.x);
+      top_line.attr('y1',self.y+self.d0.y);
+      top_line.attr('x2',self.x+self.d1.x);
+      top_line.attr('y2',self.y+self.d1.y);
 
-      var right_edge=self.dom.find('.right');
-      right_edge.attr('x1',self.d1.x);
-      right_edge.attr('y1',self.d1.y);
-      right_edge.attr('x2',self.d2.x);
-      right_edge.attr('y2',self.d2.y);
+      var right_line=self.dom.find('.right');
+      right_line.attr('x1',self.x+self.d1.x);
+      right_line.attr('y1',self.y+self.d1.y);
+      right_line.attr('x2',self.x+self.d2.x);
+      right_line.attr('y2',self.y+self.d2.y);
 
-      var bottom_edge=self.dom.find('.bottom');
-      bottom_edge.attr('x1',self.d2.x);
-      bottom_edge.attr('y1',self.d2.y);
-      bottom_edge.attr('x2',self.d3.x);
-      bottom_edge.attr('y2',self.d3.y);
+      var bottom_line=self.dom.find('.bottom');
+      bottom_line.attr('x1',self.x+self.d2.x);
+      bottom_line.attr('y1',self.y+self.d2.y);
+      bottom_line.attr('x2',self.x+self.d3.x);
+      bottom_line.attr('y2',self.y+self.d3.y);
 
-      var left_edge=self.dom.find('.left');
-      left_edge.attr('x1',self.d3.x);
-      left_edge.attr('y1',self.d3.y);
-      left_edge.attr('x2',self.d0.x);
-      left_edge.attr('y2',self.d0.y);
+      var left_line=self.dom.find('.left');
+      left_line.attr('x1',self.x+self.d3.x);
+      left_line.attr('y1',self.y+self.d3.y);
+      left_line.attr('x2',self.x+self.d0.x);
+      left_line.attr('y2',self.y+self.d0.y);
 
     }
     Trapezoid.prototype.draw_dots=function(){
@@ -149,8 +150,8 @@
     }
     Trapezoid.prototype.set_dot_position=function(elem,position){
       var self=this;
-      elem.css('left',position.x-dot_radius+'px');
-      elem.css('top',position.y-dot_radius+'px');
+      elem.css('left',self.x+position.x-dot_radius+'px');
+      elem.css('top',self.y+position.y-dot_radius+'px');
     }
     Trapezoid.prototype.bind_dots=function(){
       var self=this;

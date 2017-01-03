@@ -16,7 +16,8 @@
   <style type="text/css">
 
     html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
-    .main{width: 1200px;height: 800px;position: relative;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
+    .main{width: 1200px;height: 800px;}
+    .main{position: relative;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
     .dot{position:absolute;left:0;top:0;cursor: move;width:0;height: 0;border:solid;border-radius:50%;border-color:;pointer-events: all;}
     .trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: none;}
     svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
@@ -28,7 +29,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
   <div class="proto trape" style="display: none;">
       <svg class="polygon">
         <g>
@@ -38,23 +38,14 @@
           <line class="bottom" stroke-width="1" stroke="blue"></line>
           <line class="left" stroke-width="1" stroke="orange"></line>
         </g>
-=======
-  <div class="trapezoid" js-trape js-proto style="display: none;">
-      <svg js-polygon >
-        <polygon points="" style="fill:rgba(255,100,0,.5);" />
-        <line js-top stroke-width="1" stroke="red"></line>
-        <line js-right stroke-width="1" stroke="orange"></line>
-        <line js-bottom stroke-width="1" stroke="blue"></line>
-        <line js-left stroke-width="1" stroke="orange"></line>
->>>>>>> a65308d4198e3e1ee922c6309fa5421da9971d78
       </svg>
-      <div class="dot" js-dot="0" style="border-color:red" ></div>
-      <div class="dot" js-dot="1" style="border-color:orange" ></div>
-      <div class="dot" js-dot="2" style="border-color:green" ></div>
-      <div class="dot" js-dot="3" style="border-color:blue" ></div>
+      <div class="dot d0" style="border-color:red" ></div>
+      <div class="dot d1" style="border-color:orange" ></div>
+      <div class="dot d2" style="border-color:green" ></div>
+      <div class="dot d3" style="border-color:blue" ></div>
   </div>
 
-  <div class="main" js-main>
+  <div class="main">
     <div class="label">
       双击添加新选区。<br>
       蓝边和红边始终相互平行。<br>
@@ -83,11 +74,7 @@
     function Trape(parent,option){
       var self=this;
       var option=option||{};
-<<<<<<< HEAD
       self.dom=jq('.proto.trape').clone().removeClass('proto').show();
-=======
-      self.dom=jq('[js-proto][js-trape]').clone().removeClass('proto').show();
->>>>>>> a65308d4198e3e1ee922c6309fa5421da9971d78
       self.x=option.x||300;
       self.y=option.y||300;
       self.d0={x:0,y:0};
@@ -128,7 +115,6 @@
       }
       self.dom.find('polygon').attr('points',points);
 
-<<<<<<< HEAD
       var top_line=self.dom.find('.top');
       top_line.attr('x1',self.d0.x);
       top_line.attr('y1',self.d0.y);
@@ -152,38 +138,13 @@
       left_line.attr('y1',self.d3.y);
       left_line.attr('x2',self.d0.x);
       left_line.attr('y2',self.d0.y);
-=======
-      var top_line=self.dom.find('[js-top]');
-      top_line.attr('x1',self.x+self.d0.x);
-      top_line.attr('y1',self.y+self.d0.y);
-      top_line.attr('x2',self.x+self.d1.x);
-      top_line.attr('y2',self.y+self.d1.y);
-
-      var right_line=self.dom.find('[js-right]');
-      right_line.attr('x1',self.x+self.d1.x);
-      right_line.attr('y1',self.y+self.d1.y);
-      right_line.attr('x2',self.x+self.d2.x);
-      right_line.attr('y2',self.y+self.d2.y);
-
-      var bottom_line=self.dom.find('[js-bottom]');
-      bottom_line.attr('x1',self.x+self.d2.x);
-      bottom_line.attr('y1',self.y+self.d2.y);
-      bottom_line.attr('x2',self.x+self.d3.x);
-      bottom_line.attr('y2',self.y+self.d3.y);
-
-      var left_line=self.dom.find('[js-left]');
-      left_line.attr('x1',self.x+self.d3.x);
-      left_line.attr('y1',self.y+self.d3.y);
-      left_line.attr('x2',self.x+self.d0.x);
-      left_line.attr('y2',self.y+self.d0.y);
->>>>>>> a65308d4198e3e1ee922c6309fa5421da9971d78
 
     }
     Trape.prototype.draw_dots=function(){
       var self=this;
-      self.dom.find('[js-dot]').css('border-width',dot_radius+'px');
+      self.dom.find('.dot').css('border-width',dot_radius+'px');
       for(var i=0;i<4;i++){
-        self.set_dot_position(self.dom.find('[js-dot='+i+']'),self['d'+i]);
+        self.set_dot_position(self.dom.find('.d'+i),self['d'+i]);
       }
     }
     Trape.prototype.get_dot_position=function(elem){
@@ -200,7 +161,7 @@
     Trape.prototype.bind_dots=function(){
       var self=this;
 
-      self.dom.find('[js-dot]').each(function(i,elem){
+      self.dom.find('.dot').each(function(i,elem){
 
         elem=jq(elem);
         var startX = 0, startY = 0, x = 0, y = 0;
@@ -311,7 +272,7 @@
     Trape.prototype.bind_polygon=function(){
       var self=this;
 
-      self.dom.find('[js-polygon]').each(function(i,elem){
+      self.dom.find('.polygon').each(function(i,elem){
 
         elem=jq(elem);
         var startX = 0, startY = 0, x = 0, y = 0;
@@ -351,19 +312,11 @@
   </script>
 
   <script type="text/javascript">
-<<<<<<< HEAD
     var trape=new Trape('.main');
     var trape2=new Trape('.main',{x:100,y:100});
 
     jq(document).dblclick(function(e){
       new Trape('.main',{
-=======
-    var trapezoid=new Trapezoid('[js-main]');
-    var trapezoid2=new Trapezoid('[js-main]',{x:100,y:100});
-
-    jq(document).dblclick(function(e){
-      new Trapezoid('[js-main]',{
->>>>>>> a65308d4198e3e1ee922c6309fa5421da9971d78
         x:e.pageX,
         y:e.pageY,
       })

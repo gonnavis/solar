@@ -360,6 +360,13 @@
         m.cy=m.dy;
 
         m.trape_height=m.dy;
+        if(m.trape_height<=0){
+          self.is_flip=true;
+          m.trape_height*=-1;
+        }
+        else{
+          self.is_flip=false;
+        }
 
         square_left=Math.max(m.ax,m.dx);
         square_right=Math.min(m.bx,m.cx);
@@ -486,7 +493,12 @@
           newElement.style.strokeWidth = "1"; //Set stroke colour
 
           self.dom.find('svg g.solars')[0].appendChild(newElement);
-          self.dom.find('svg g.solars').css('transform','rotate('+-self.degree+'deg)');
+          if(self.is_flip){
+            self.dom.find('svg g.solars').css('transform','rotate('+-self.degree+'deg) scaleY(-1)');
+          }
+          else{
+            self.dom.find('svg g.solars').css('transform','rotate('+-self.degree+'deg)');
+          }
         }
 
 

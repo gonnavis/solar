@@ -319,6 +319,9 @@
 
       // init
 
+        self.test={};
+        var t=self.test;
+
         var m={};
 
         m.solars=[];
@@ -329,16 +332,16 @@
         m.trape_top_width=gv.get_distance(self.d0,self.d1)
         m.trape_bottom_width=gv.get_distance(self.d3,self.d2)
 
-        self.h_m=-self.d1.y/self.d1.x;
-        self.h_b1=0;
-        self.h_b2=-self.d2.y-self.h_m*self.d2.x;
-        m.trape_height=
-          Math.abs(self.h_b2-self.h_b1)
-          /Math.sqrt(Math.pow(self.h_m,2)+1)
-          ;
+        // self.h_m=-self.d1.y/self.d1.x;
+        // self.h_b1=0;
+        // self.h_b2=-self.d2.y-self.h_m*self.d2.x;
+        // m.trape_height=
+        //   Math.abs(self.h_b2-self.h_b1)
+        //   /Math.sqrt(Math.pow(self.h_m,2)+1)
+        //   ;
 
-        self.h_hypotenuse=gv.get_distance(self.d0,self.d3);
-        m.trape_bottom_x=-Math.cos(Math.asin(m.trape_height/self.h_hypotenuse))*self.h_hypotenuse;
+        // self.h_hypotenuse=gv.get_distance(self.d0,self.d3);
+        // m.trape_bottom_x=-Math.cos(Math.asin(m.trape_height/self.h_hypotenuse))*self.h_hypotenuse;
 
         m.ax=0;
         m.ay=0;
@@ -346,11 +349,17 @@
         m.bx=m.trape_top_width;
         m.by=0;
 
-        m.cx=m.trape_bottom_width+m.trape_bottom_x;
-        m.cy=m.trape_height;
+        t.len=gv.get_distance(self.d3,self.d0);
+        t.radian_old=Math.atan(self.d3.x/-self.d3.y);
+        t.degree_old=gv.radian_to_degree(t.radian_old);
+        t.new_radian=Math.PI+(Math.PI/2-(t.radian_old+self.radian));
+        m.dx=Math.cos(t.new_radian)*t.len;
+        m.dy=-Math.sin(t.new_radian)*t.len;
 
-        m.dx=m.trape_bottom_x;
-        m.dy=m.trape_height;
+        m.cx=m.trape_bottom_width+m.dx;
+        m.cy=m.dy;
+
+        m.trape_height=m.dy;
 
         square_left=Math.max(m.ax,m.dx);
         square_right=Math.min(m.bx,m.cx);
@@ -488,7 +497,7 @@
 
   <script type="text/javascript">
     var trape=new Trape('.main');
-    var trape2=new Trape('.main',{x:100,y:100});
+    // var trape2=new Trape('.main',{x:100,y:100});
 
     jq(document).dblclick(function(e){
       new Trape('.main',{

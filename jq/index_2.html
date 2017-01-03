@@ -350,9 +350,16 @@
         m.by=0;
 
         t.len=gv.get_distance(self.d3,self.d0);
-        t.radian_old=Math.atan(self.d3.x/-self.d3.y);
-        t.degree_old=gv.radian_to_degree(t.radian_old);
-        t.new_radian=Math.PI+(Math.PI/2-(t.radian_old+self.radian));
+        t.old_radian=Math.atan(self.d3.x/-self.d3.y);
+        t.old_degree=gv.radian_to_degree(t.old_radian);
+        if(t.old_radian>0){
+          t.new_radian=Math.PI+(Math.PI/2-(t.old_radian+self.radian));
+          t.new_degree=gv.radian_to_degree(t.new_radian);
+        }
+        else{
+          t.new_radian=Math.PI/2+-t.old_radian-self.radian;
+          t.new_degree=gv.radian_to_degree(t.new_radian);
+        }
         m.dx=Math.cos(t.new_radian)*t.len;
         m.dy=-Math.sin(t.new_radian)*t.len;
 

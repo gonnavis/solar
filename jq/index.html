@@ -328,8 +328,17 @@
 
         m.trape_top_width=gv.get_distance(self.d0,self.d1)
         m.trape_bottom_width=gv.get_distance(self.d3,self.d2)
-        m.trape_bottom_x=self.d3.x;
-        m.trape_height=self.d3.y-self.d0.y;
+
+        self.h_m=-self.d1.y/self.d1.x;
+        self.h_b1=0;
+        self.h_b2=-self.d2.y-self.h_m*self.d2.x;
+        m.trape_height=
+          Math.abs(self.h_b2-self.h_b1)
+          /Math.sqrt(Math.pow(self.h_m,2)+1)
+          ;
+
+        self.h_hypotenuse=gv.get_distance(self.d0,self.d3);
+        m.trape_bottom_x=-Math.cos(Math.asin(m.trape_height/self.h_hypotenuse))*self.h_hypotenuse;
 
         m.ax=0;
         m.ay=0;

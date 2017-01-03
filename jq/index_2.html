@@ -184,6 +184,7 @@
           startY = e.pageY;
           jq(document).on('mousemove', mousemove);
           jq(document).on('mouseup', mouseup);
+          self.dom.find('.solars').hide();
         });
 
         function mousemove(e) {
@@ -277,6 +278,7 @@
           jq(document).off('mousemove', mousemove);
           jq(document).off('mouseup', mouseup);
           self.draw_solars();
+          self.dom.find('.solars').show();
         }
       })
     }

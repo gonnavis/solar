@@ -103,6 +103,7 @@
       self.bind_polygon();
       self.draw_trape();
       jq(parent).append(self.dom);
+      self.draw_solars();
     }
     Trape.prototype.draw_trape=function(){
       var self=this;
@@ -275,6 +276,7 @@
         function mouseup() {
           jq(document).off('mousemove', mousemove);
           jq(document).off('mouseup', mouseup);
+          self.draw_solars();
         }
       })
     }

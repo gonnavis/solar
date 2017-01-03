@@ -343,12 +343,6 @@
         // self.h_hypotenuse=gv.get_distance(self.d0,self.d3);
         // m.trape_bottom_x=-Math.cos(Math.asin(m.trape_height/self.h_hypotenuse))*self.h_hypotenuse;
 
-        m.ax=0;
-        m.ay=0;
-
-        m.bx=m.trape_top_width;
-        m.by=0;
-
         t.len=gv.get_distance(self.d3,self.d0);
         t.old_radian=Math.atan(self.d3.x/-self.d3.y);
         t.old_degree=gv.radian_to_degree(t.old_radian);
@@ -360,20 +354,30 @@
           t.new_radian=Math.PI/2+-t.old_radian-self.radian;
           t.new_degree=gv.radian_to_degree(t.new_radian);
         }
-        m.dx=Math.cos(t.new_radian)*t.len;
-        m.dy=-Math.sin(t.new_radian)*t.len;
+        t.t_opposite=Math.cos(t.new_radian)*t.len;
+        t.t_adjacent=-Math.sin(t.new_radian)*t.len;
 
-        m.cx=m.trape_bottom_width+m.dx;
-        m.cy=m.dy;
-
-        m.trape_height=m.dy;
-        if(m.trape_height<=0){
-          self.is_flip=true;
+        m.trape_height=t.t_adjacent;
+        if(t.t_adjacent<0){
           m.trape_height*=-1;
         }
-        else{
-          self.is_flip=false;
+
+        m.ax=0;
+        m.ay=0;
+
+        m.bx=m.trape_top_width;
+        m.by=0;
+
+        m.dx=t.t_opposite;
+        if(t.t_adjacent<0){
+          m.dx*=-1;
         }
+        m.dy=m.trape_height;
+
+        m.cx=m.trape_bottom_width+m.dx;
+        m.cy=m.trape_height;
+
+        m.trape_height=m.dy;
 
         square_left=Math.max(m.ax,m.dx);
         square_right=Math.min(m.bx,m.cx);

@@ -60,7 +60,7 @@
 		var log=console.log;
 
 		angular.module('myApp',[])
-		.controller('myController',function($scope){
+		.controller('myController',function($scope,$timeout){
 			
 			// init
 				var $s=$scope;
@@ -213,6 +213,12 @@
 					// 		})
 					// 	}
 					// }
+
+					if($m.cx<$m.ax){
+						$timeout(function(){
+							alert('底边右侧不得小于顶边左侧，请调整');
+						})
+					}
 				}
 
 			// init

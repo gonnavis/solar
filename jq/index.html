@@ -273,7 +273,7 @@
         var startX = 0, startY = 0, x = 0, y = 0;
 
         elem.on('mousedown', function(e) {
-          console.log(2);
+          // console.log(2);
           e.preventDefault();
           startX = e.pageX;
           startY = e.pageY;
@@ -282,7 +282,7 @@
         });
 
         function mousemove(e) {
-          console.log(1);
+          // console.log(1);
           x = e.pageX - startX;
           y = e.pageY - startY;
           startX = e.pageX;

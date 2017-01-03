@@ -51,7 +51,8 @@
 
 	<button ng-click="submit()">提交</button>
 
-	<span> 共计 {{m.solars.length}} 块太阳能板</span>
+	<span ng-if="!m.err_msg"> 共计 {{m.solars.length}} 块太阳能板</span>
+	<span ng-if="m.err_msg" style="color:red;"> {{m.err_msg}}</span>
 
 
 
@@ -66,11 +67,11 @@
 				var $s=$scope;
 				window.scope=$s;
 				$s.m={};
-				var $m=$s.m;
-				// $m.a=100;
+				var m=$s.m;
+				// m.a=100;
 				var area_width=500;
 				var area_height=500;
-				$m.solars=[];
+				m.solars=[];
 				var square_left=0;
 				var square_right=0;
 				var square_solars_right=0;
@@ -79,76 +80,78 @@
 				$s.submit=function(){
 
 					// init
-						$m.solars=[];
+						m.err_msg='';
 
-						$m.ax=0;
-						$m.ay=0;
+						m.solars=[];
 
-						$m.bx=$m.trape_top_width;
-						$m.by=0;
+						m.ax=0;
+						m.ay=0;
 
-						$m.cx=$m.trape_bottom_width+$m.trape_bottom_x;
-						$m.cy=$m.trape_height;
+						m.bx=m.trape_top_width;
+						m.by=0;
 
-						$m.dx=$m.trape_bottom_x;
-						$m.dy=$m.trape_height;
+						m.cx=m.trape_bottom_width+m.trape_bottom_x;
+						m.cy=m.trape_height;
 
-						square_left=Math.max($m.ax,$m.dx);
-						square_right=Math.min($m.bx,$m.cx);
+						m.dx=m.trape_bottom_x;
+						m.dy=m.trape_height;
+
+						square_left=Math.max(m.ax,m.dx);
+						square_right=Math.min(m.bx,m.cx);
 						square_width=square_right-square_left;
 
-						var row_count=Math.floor($m.trape_height/$m.solar_height);
+						var row_count=Math.floor(m.trape_height/m.solar_height);
 
 					// square
 						for(var i=0;i<row_count;i++){
-							var col_count=Math.floor(square_width/$m.solar_width);
-							square_solars_right=square_left+col_count*$m.solar_width;
+							var col_count=Math.floor(square_width/m.solar_width);
+							square_solars_right=square_left+col_count*m.solar_width;
 							for(var j=0;j<col_count;j++){
-								$m.solars.push({
-									x:square_left+j*$m.solar_width+$m.ax,
-									y:$m.trape_height-(i+1)*$m.solar_height,
+								m.solars.push({
+									x:square_left+j*m.solar_width+m.ax,
+									y:m.trape_height-(i+1)*m.solar_height,
 								})
 							}
 						}
 					// /square
 
 					// right
-						if($m.cx>$m.bx){
-							var right_triangle_bottom_width=$m.cx-$m.bx;
-							var blank_width=$m.bx-square_solars_right;
+						if(m.cx>m.bx){
+							var right_triangle_bottom_width=m.cx-m.bx;
+							var blank_width=m.bx-square_solars_right;
 							for(var i=0;i<row_count;i++){
-								var small_triangle_height=($m.trape_height-$m.solar_height*(i+1));
+								var small_triangle_height=(m.trape_height-m.solar_height*(i+1));
 								var small_triangle_width=
 									right_triangle_bottom_width
-									/$m.trape_height
+									/m.trape_height
 									*small_triangle_height
 									;
 								var row_width=small_triangle_width+blank_width;
-								var col_count=Math.floor(row_width/$m.solar_width);
+								var col_count=Math.floor(row_width/m.solar_width);
 								for(var j=0;j<col_count;j++){
-									$m.solars.push({
-										x:square_solars_right+$m.solar_width*j,
+									m.solars.push({
+										x:square_solars_right+m.solar_width*j,
 										y:small_triangle_height,
 									})
 								}
 							}
 						}
 						else{
-							var right_triangle_top_width=$m.bx-$m.cx;
-							var blank_width=$m.cx-square_solars_right;
+							var right_triangle_top_width=m.bx-m.cx;
+							var blank_width=m.cx-square_solars_right;
 							for(var i=0;i<row_count;i++){
-								var small_triangle_height=$m.solar_height*i;
+								var small_triangle_height=m.solar_height*i;
 								var small_triangle_width=
 									right_triangle_top_width
-									/$m.trape_height
+									/m.trape_height
 									*small_triangle_height
 									;
 								var row_width=small_triangle_width+blank_width;
-								var col_count=Math.floor(row_width/$m.solar_width);
+								var col_count=Math.floor(row_width/m.solar_width);
 								for(var j=0;j<col_count;j++){
-									$m.solars.push({
-										x:square_solars_right+$m.solar_width*j,
-										y:$m.trape_height-small_triangle_height-$m.solar_height,
+									m.solars.push({
+										x:square_solars_right+m.solar_width*j,
+										y:m.trape_height-small_triangle_height-m.solar_height,
 									})
 								}
 							}
@@ -156,40 +159,40 @@
 					// /right
 
 					// left
-						if($m.ax>$m.dx){
-							var left_triangle_bottom_width=$m.ax-$m.dx;
+						if(m.ax>m.dx){
+							var left_triangle_bottom_width=m.ax-m.dx;
 							for(var i=0;i<row_count;i++){
-								var small_triangle_height=($m.trape_height-$m.solar_height*(i+1));
+								var small_triangle_height=(m.trape_height-m.solar_height*(i+1));
 								var small_triangle_width=
 									left_triangle_bottom_width
-									/$m.trape_height
+									/m.trape_height
 									*small_triangle_height
 									;
 								var row_width=small_triangle_width;
-								var col_count=Math.floor(row_width/$m.solar_width);
+								var col_count=Math.floor(row_width/m.solar_width);
 								for(var j=0;j<col_count;j++){
-									$m.solars.push({
-										x:-$m.solar_width*(j+1),
+									m.solars.push({
+										x:-m.solar_width*(j+1),
 										y:small_triangle_height,
 									})
 								}
 							}
 						}
 						else{
-							var left_triangle_top_width=$m.dx-$m.ax;
+							var left_triangle_top_width=m.dx-m.ax;
 							for(var i=0;i<row_count;i++){
-								var small_triangle_height=$m.solar_height*i;
+								var small_triangle_height=m.solar_height*i;
 								var small_triangle_width=
 									left_triangle_top_width
-									/$m.trape_height
+									/m.trape_height
 									*small_triangle_height
 									;
 								var row_width=small_triangle_width;
-								var col_count=Math.floor(row_width/$m.solar_width);
+								var col_count=Math.floor(row_width/m.solar_width);
 								for(var j=0;j<col_count;j++){
-									$m.solars.push({
-										x:square_left+-$m.solar_width*(j+1),
-										y:$m.trape_height-small_triangle_height-$m.solar_height,
+									m.solars.push({
+										x:square_left+-m.solar_width*(j+1),
+										y:m.trape_height-small_triangle_height-m.solar_height,
 									})
 								}
 							}
@@ -197,37 +200,35 @@
 					// /left
 
 
-					// for(var j=1;j<=$m.trape_height/$m.solar_height;j++){
+					// for(var j=1;j<=m.trape_height/m.solar_height;j++){
 
 					// 	var x=
-					// 		(($m.trape_bottom_width-$m.trape_top_width)/2)/
-					// 		($m.trape_height)*
-					// 		($m.solar_height*j)
+					// 		((m.trape_bottom_width-m.trape_top_width)/2)/
+					// 		(m.trape_height)*
+					// 		(m.solar_height*j)
 					// 		;
-					// 	var width=$m.trape_bottom_width-x*2;
+					// 	var width=m.trape_bottom_width-x*2;
 
-					// 	for(var i=0;i<width/$m.solar_width-1;i++){
-					// 		$m.solars.push({
-					// 			x:($m.solar_width*i+x),
-					// 			y:$m.trape_height-$m.solar_height*j,
+					// 	for(var i=0;i<width/m.solar_width-1;i++){
+					// 		m.solars.push({
+					// 			x:(m.solar_width*i+x),
+					// 			y:m.trape_height-m.solar_height*j,
 					// 		})
 					// 	}
 					// }
 
-					if($m.cx<$m.ax){
-						$timeout(function(){
-							alert('底边右侧不得小于顶边左侧，请调整');
-						})
+					if(m.cx<m.ax){
+						m.err_msg='底边右侧不得小于顶边左侧，请调整';
 					}
 				}
 
 			// init
-				$m.trape_top_width=320;
-				$m.trape_bottom_width=590;
-				$m.trape_bottom_x=-70;
-				$m.trape_height=200;
-				$m.solar_width=30;
-				$m.solar_height=15;
+				m.trape_top_width=320;
+				m.trape_bottom_width=590;
+				m.trape_bottom_x=-70;
+				m.trape_height=200;
+				m.solar_width=30;
+				m.solar_height=15;
 				$s.submit();
 
 		})

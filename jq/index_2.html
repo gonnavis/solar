@@ -56,6 +56,7 @@
     </div>
     <div class="btns">
       <!-- <div class="btn calc_solars">计算太阳能板数量</div> -->
+      <div class="btn ">太阳能板总数： <span class="solars_total"></span></div>
     </div>
   </div>
 
@@ -82,6 +83,7 @@
 
     function Trape(parent,option){
       var self=this;
+      Trape.prototype.trapes.push(self);
       var option=option||{};
       self.dom=jq('.proto.trape').clone().removeClass('proto').show();
       self.x=option.x||300;
@@ -92,9 +94,7 @@
       self.d3={x:-20,y:80};
       self.radian=0;
       self.degree=0;
-
       self.init(parent);
-      self.trapes.push(self);
     }
     Trape.prototype.trapes=[];
     Trape.prototype.init=function(parent){
@@ -489,6 +489,14 @@
 
       self.solars=m.solars;
       self.m=m;
+
+      // count
+        var solars_total=0;
+        for(var i=0;i<Trape.prototype.trapes.length;i++){
+          var trape=Trape.prototype.trapes[i];
+          solars_total+=trape.solars.length;
+        }
+        jq('.solars_total').html(solars_total);
 
       // draw
         self.dom.find('.solar').remove();

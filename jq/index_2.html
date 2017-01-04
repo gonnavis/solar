@@ -297,6 +297,7 @@
           startY = e.pageY;
           jq(document).on('mousemove', mousemove);
           jq(document).on('mouseup', mouseup);
+          self.dom.find('.solars').hide();
         });
 
         function mousemove(e) {
@@ -315,6 +316,7 @@
         function mouseup() {
           jq(document).off('mousemove', mousemove);
           jq(document).off('mouseup', mouseup);
+          self.dom.find('.solars').show();
         }
       })
     }

@@ -5,7 +5,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
   <script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
@@ -13,18 +13,20 @@
     var jq=jQuery.noConflict();
   </script>
 
+  <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css">
   <style type="text/css">
 
     html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
     .main{width: 1200px;height: 800px;}
-    .main{position: relative;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
+    .main{position: fixed;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
     .dot{position:absolute;left:0;top:0;cursor: move;width:0;height: 0;border:solid;border-radius:50%;border-color:;pointer-events: all;}
     .trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: none;}
     svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
-    svg .trape_fill{pointer-events: all;}
-    .label{    position: absolute; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+    .trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
+    .trape.act .trape_fill{fill:rgba(255,100,0,.5);}
+    .label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
     .btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
-    .btn{border: solid 2px; background: white;padding:10px;display: inline-block;cursor: pointer;pointer-events: all;}
+    .btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
 
   </style>
 
@@ -34,10 +36,10 @@
   <div class="proto trape" style="display: none;">
       <svg class="polygon">
         <g class="position">
-          <polygon class="trape_fill" points="" style="fill:rgba(255,100,0,.5);" />
-          <line class="top" stroke-width="1" stroke="red"></line>
+          <polygon class="trape_fill" points="" style="" />
+          <line class="top" stroke-width="2" stroke="red"></line>
           <line class="right" stroke-width="1" stroke="orange"></line>
-          <line class="bottom" stroke-width="1" stroke="blue"></line>
+          <line class="bottom" stroke-width="2" stroke="red"></line>
           <line class="left" stroke-width="1" stroke="orange"></line>
           <g class="solars"></g>
         </g>
@@ -51,12 +53,13 @@
   <div class="main">
     <div class="label">
       双击添加新选区。<br>
-      蓝边和红边始终相互平行。<br>
-      将以蓝边为底边向上排列太阳能板，因此请以蓝边为长边，红边为短边。
+      红边为平行边。<br>
     </div>
     <div class="btns">
       <!-- <div class="btn calc_solars">计算太阳能板数量</div> -->
       <div class="btn ">太阳能板总数： <span class="solars_total"></span></div>
+      <div class="btn rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
+      <div class="btn rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
     </div>
   </div>
 
@@ -104,6 +107,7 @@
       self.draw_trape();
       jq(parent).append(self.dom);
       self.draw_solars();
+      self.set_act();
     }
     Trape.prototype.draw_trape=function(){
       var self=this;
@@ -150,7 +154,6 @@
       left_line.attr('y1',self.d3.y);
       left_line.attr('x2',self.d0.x);
       left_line.attr('y2',self.d0.y);
-
     }
     Trape.prototype.draw_dots=function(){
       var self=this;
@@ -185,6 +188,7 @@
           jq(document).on('mousemove', mousemove);
           jq(document).on('mouseup', mouseup);
           self.dom.find('.solars').hide();
+          self.set_act();
         });
 
         function mousemove(e) {
@@ -298,6 +302,7 @@
           jq(document).on('mousemove', mousemove);
           jq(document).on('mouseup', mouseup);
           self.dom.find('.solars').hide();
+          self.set_act();
         });
 
         function mousemove(e) {
@@ -525,16 +530,85 @@
             self.dom.find('svg g.solars').css('transform','rotate('+-self.degree+'deg)');
           }
         }
-
-
+    }
+    Trape.prototype.get_dot_radian=function(dot,origin){
+      /* params
+        dot: a point
+        origin: a point
+      */
+      var self=this;
+      var radian;
+      origin=origin||{x:0,y:0};
+      var hypotenuse=gv.get_distance(origin,dot);
+      var opposite=origin.y-dot.y;
+      var asin=Math.asin(opposite/hypotenuse);
+      radian=asin;
+      if(dot.x<origin.x){
+        radian=Math.PI-asin;
+      }
+      if(dot.x>origin.x&&dot.y>origin.y){
+        radian=Math.PI*2+asin;
+      }
+      return radian;
+    }
+    Trape.prototype.set_dot_radian=function(dot,radian,origin){
+      /* params
+        dot: a point
+        origin: a point
+      */
+      var self=this;
+      origin=origin||{x:0,y:0};
+      var hypotenuse=gv.get_distance(dot,origin);
+      var opposite=hypotenuse*Math.sin(radian);
+      var adjacent=hypotenuse*Math.cos(radian);
+      dot.x=adjacent+origin.x;
+      dot.y=-opposite+origin.y;
+    }
+    Trape.prototype.rotate_dot=function(dot,radian,origin){
+      /* params
+        origin: point
+      */
+      var self=this;
+      origin=origin||{x:0,y:0};
+      var new_radian=self.get_dot_radian(dot,origin)+radian;
+      self.set_dot_radian(dot,new_radian,origin);
+    }
+    Trape.prototype.rotate=function(radian){
+      var self=this;
+      for(var i=1;i<4;i++){
+        self.rotate_dot(self['d'+i],radian);
+      }
+      self.radian=self.get_dot_radian(self.d1);
+      self.degree=gv.radian_to_degree(self.radian);
+    }
+    Trape.prototype.refresh_data=function(){
+      // var self=this;
+      // self.degree=self.get_dot_radian(self.d1);
+    }
+    Trape.prototype.set_act=function(){
+      var self=this;
+      for(var i=0;i<Trape.prototype.trapes.length;i++){
+        var trape=Trape.prototype.trapes[i];
+        trape.dom.removeClass('act');
+      }
+      Trape.prototype.trape_act=self;
+      self.dom.addClass('act');
+    }
+    Trape.prototype.fn_proto=function(){
+      var self=this;
     }
 
 
   </script>
 
   <script type="text/javascript">
-    var trape=new Trape('.main');
-    // var trape2=new Trape('.main',{x:100,y:100});
+    var trape=new Trape('.main',{x:100,y:170});
+    var trape2=new Trape('.main',{x:270,y:270});
+
+    trape.set_act();
+    trape2.rotate(Math.PI/2);
+    trape2.draw_trape();
+    trape2.draw_solars();
 
     jq(document).dblclick(function(e){
       new Trape('.main',{
@@ -552,6 +626,18 @@
         var trape=Trape.prototype.trapes[i];
         trape.draw_solars();
       }
+    })
+
+    jq('.rotate_left').click(function(){
+      Trape.prototype.trape_act.rotate(Math.PI/2);
+      Trape.prototype.trape_act.draw_trape();
+      Trape.prototype.trape_act.draw_solars();
+    })
+
+    jq('.rotate_right').click(function(){
+      Trape.prototype.trape_act.rotate(-Math.PI/2);
+      Trape.prototype.trape_act.draw_trape();
+      Trape.prototype.trape_act.draw_solars();
     })
   </script>
 

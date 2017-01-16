@@ -1,0 +1,81 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+	<script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+	<script type="text/javascript">
+		var jq=jQuery.noConflict();
+	</script>
+	<script src="/test/lib/interact/dist/interact.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css">
+	<style type="text/css">
+		.resize-drag {
+			background-color: #29e;
+			color: white;
+			font-size: 20px;
+			font-family: sans-serif;
+			border-radius: 8px;
+			padding: 20px;
+			margin: 30px 20px;
+
+			width: 120px;
+
+			/* This makes things *much* easier */
+			box-sizing: border-box;
+		}
+
+		.resize-container {
+			width: 100%;
+			height: 240px;
+		}
+	</style>
+
+</head>
+<body>
+
+	<div class="resize-container">
+		<div class="resize-drag">
+			 Resize from any edge or corner
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		interact('.resize-drag')
+			.draggable({
+				onmove: window.dragMoveListener
+			})
+			.resizable({
+				preserveAspectRatio: true,
+				edges: { left: true, right: true, bottom: true, top: true }
+			})
+			.on('resizemove', function (event) {
+				var target = event.target,
+						x = (parseFloat(target.getAttribute('data-x')) || 0),
+						y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+				// update the element's style
+				target.style.width  = event.rect.width + 'px';
+				target.style.height = event.rect.height + 'px';
+
+				// translate when resizing from top or left edges
+				x += event.deltaRect.left;
+				y += event.deltaRect.top;
+
+				target.style.webkitTransform = target.style.transform =
+						'translate(' + x + 'px,' + y + 'px)';
+
+				target.setAttribute('data-x', x);
+				target.setAttribute('data-y', y);
+				target.textContent = Math.round(event.rect.width) + '×' + Math.round(event.rect.height);
+			});
+	</script>
+
+</body>
+</html>

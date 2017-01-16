@@ -1,0 +1,544 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+	<script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+	<script type="text/javascript">
+		var jq=jQuery.noConflict();
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css">
+	<style type="text/css">
+
+		html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
+		.main{width: 1200px;height: 800px;}
+		.main{position: fixed;background: url(bg.jpg) no-repeat;background-size:100% 100%;}
+		.dot{position:absolute;left:0;top:0;cursor: move;width:0;height: 0;border:solid;border-radius:50%;border-color:;pointer-events: all;}
+		.trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: none;}
+		svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
+		.trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
+		.trape.act .trape_fill{fill:rgba(255,100,0,.5);}
+		.label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+		.btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
+		.btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
+		/*.arrows{display: none;}*/
+		.arrow{fill: red;display: none;}
+		.arrow_up{ transform: translate(-32px,-70px) scale(.06); }
+		.arrow_down{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
+		.arrow_left{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
+		.arrow_right{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
+	</style>
+
+</head>
+<body>
+
+	<div class="proto trape" style="display: none;">
+		<svg class="polygon">
+			<g class="position">
+				<polygon class="trape_fill" points="" style="" />
+				<line class="top" stroke-width="2" stroke="red"></line>
+				<line class="right" stroke-width="1" stroke="orange"></line>
+				<line class="bottom" stroke-width="2" stroke="red"></line>
+				<line class="left" stroke-width="1" stroke="orange"></line>
+				<g class="rotater">
+					<g class="solars"></g>
+					<g class="arrows">
+						<path class="arrow arrow_up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+						<path class="arrow arrow_down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+						<path class="arrow arrow_left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+						<path class="arrow arrow_right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+					</g>
+				</g>
+			</g>
+		</svg>
+		<div class="dot d0" style="border-color:red" ></div>
+		<div class="dot d1" style="border-color:orange" ></div>
+		<div class="dot d2" style="border-color:green" ></div>
+		<div class="dot d3" style="border-color:blue" ></div>
+	</div>
+
+	<div class="main">
+		<div class="label">
+			双击添加新选区。<br>
+			红边为平行边。<br>
+		</div>
+		<div class="btns">
+			<!-- <div class="btn calc_solars">计算太阳能板数量</div> -->
+			<div class="btn ">太阳能板总数： <span class="solars_total"></span></div>
+			<div class="btn rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
+			<div class="btn rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
+			<div class="btn delete" >删除</div>
+			<div class="btn set_lean" style="display: none;">设置倾斜方向</div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+
+		var log=console.log;
+
+		var gv={};
+		gv.radian_to_degree=function(radian){
+			return radian*180/Math.PI;
+		}
+		gv.get_distance=function(a,b){
+			return Math.sqrt(
+					Math.pow((a.x-b.x),2)
+					+Math.pow((a.y-b.y),2)
+				)
+		}
+	</script>
+
+	<script type="text/javascript">
+
+		var dot_radius=4;
+
+		function Trape(parent,option){
+			var self=this;
+			Trape.prototype.trapes.push(self);
+			var option=option||{};
+			self.dom=jq('.proto.trape').clone().removeClass('proto').show();
+			self.x=option.x||300;
+			self.y=option.y||300;
+			self.d0={x:0,y:0};
+			self.d1={x:100,y:0};
+			self.d2={x:120,y:80};
+			self.d3={x:-20,y:80};
+			self.radian=0;
+			self.degree=0;
+			self.init(parent);
+		}
+
+		Trape.prototype={
+			trapes:[],
+			init:function(parent){
+				var self=this;
+				self.bind_dots();
+				self.bind_polygon();
+				self.draw_trape();
+				jq(parent).append(self.dom);
+				self.draw_solars();
+				self.set_act();
+			},
+			draw_trape:function(){
+				var self=this;
+				self.dom.css({
+					left:self.x+'px',
+					top:self.y+'px',
+				})
+				self.dom.find('g.position').css({
+					transform:'translate('+self.x+'px,'+self.y+'px)',
+				})
+				self.draw_polygon();
+				self.draw_dots();
+			},
+			draw_polygon:function(){
+				var self=this;
+				var points='';
+
+				for(var i=0;i<4;i++){
+					// points+=(self['d'+i].x)+','+(self['d'+i].y)+' ';
+					points+=(self['d'+i].x)+','+(self['d'+i].y)+' ';
+				}
+				self.dom.find('.trape_fill').attr('points',points);
+
+				var top_line=self.dom.find('.top');
+				top_line.attr('x1',self.d0.x);
+				top_line.attr('y1',self.d0.y);
+				top_line.attr('x2',self.d1.x);
+				top_line.attr('y2',self.d1.y);
+
+				var right_line=self.dom.find('.right');
+				right_line.attr('x1',self.d1.x);
+				right_line.attr('y1',self.d1.y);
+				right_line.attr('x2',self.d2.x);
+				right_line.attr('y2',self.d2.y);
+
+				var bottom_line=self.dom.find('.bottom');
+				bottom_line.attr('x1',self.d2.x);
+				bottom_line.attr('y1',self.d2.y);
+				bottom_line.attr('x2',self.d3.x);
+				bottom_line.attr('y2',self.d3.y);
+
+				var left_line=self.dom.find('.left');
+				left_line.attr('x1',self.d3.x);
+				left_line.attr('y1',self.d3.y);
+				left_line.attr('x2',self.d0.x);
+				left_line.attr('y2',self.d0.y);
+			},
+			draw_dots:function(){
+				var self=this;
+				self.dom.find('.dot').css('border-width',dot_radius+'px');
+				for(var i=0;i<4;i++){
+					self.set_dot_position(self.dom.find('.d'+i),self['d'+i]);
+				}
+			},
+			get_dot_position:function(elem){
+				var self=this;
+				var x=parseFloat(elem.css('left'))+dot_radius;
+				var y=parseFloat(elem.css('top'))+dot_radius;
+				return {x:x,y:y};
+			},
+			set_dot_position:function(elem,position){
+				var self=this;
+				elem.css('left',position.x-dot_radius+'px');
+				elem.css('top',position.y-dot_radius+'px');
+			},
+			bind_dots:function(){
+				var self=this;
+
+				self.dom.find('.dot').each(function(i,elem){
+
+					elem=jq(elem);
+					var startX = 0, startY = 0, x = 0, y = 0;
+
+					elem.on('mousedown', function(e) {
+						e.preventDefault();
+						startX = e.pageX;
+						startY = e.pageY;
+						jq(document).on('mousemove', mousemove);
+						jq(document).on('mouseup', mouseup);
+						self.dom.find('.solars').hide();
+						self.set_act();
+					});
+
+					function mousemove(e) {
+						x = e.pageX - startX;
+						y = e.pageY - startY;
+						startX = e.pageX;
+						startY = e.pageY;
+
+						if(i==0){
+							self.x+=x;
+							self.y+=y;
+
+							for(var j=1;j<4;j++){
+								self['d'+j].x-=x;
+								self['d'+j].y-=y;
+							}
+
+						}
+
+						if(i==0||i==1){
+							if(i==1){
+								self['d'+i].x+=x;
+								self['d'+i].y+=y;
+							}
+
+							var adjacent=self.d1.x-self.d0.x;
+							var opposite=-(self.d1.y-self.d0.y);
+
+							if(adjacent==0&&opposite==0){
+								return;
+							}
+
+							var radian=Math.atan(opposite/adjacent);
+							if(adjacent<0){
+								radian=radian+Math.PI;
+							}
+
+							var hypotenuse2=gv.get_distance(self.d3,self.d2);
+							// console.log(hypotenuse2);
+							var opposite2=Math.sin(radian)*hypotenuse2;
+							var adjacent2=Math.cos(radian)*hypotenuse2;
+							self.d2.x=self.d3.x+adjacent2;
+							self.d2.y=self.d3.y+(-opposite2);
+
+
+
+							self.radian=radian;
+							if(adjacent>=0&&opposite<0){
+								self.radian=self.radian+2*Math.PI;
+							}
+							self.degree=gv.radian_to_degree(self.radian);
+							// console.log(self.degree);
+						}
+						else if(i==2||i==3){
+							self['d'+i].x+=x;
+							self['d'+i].y+=y;
+
+							var adjacent=self.d2.x-self.d3.x;
+							var opposite=-(self.d2.y-self.d3.y);
+
+							if(adjacent==0&&opposite==0){
+								return;
+							}
+
+							var radian=Math.atan(opposite/adjacent);
+							if(adjacent<0){
+								radian=radian+Math.PI;
+							}
+
+							var hypotenuse2=gv.get_distance(self.d0,self.d1);
+							var opposite2=Math.sin(radian)*hypotenuse2;
+							var adjacent2=Math.cos(radian)*hypotenuse2;
+							self.d1.x=self.d0.x+adjacent2;
+							self.d1.y=self.d0.y+(-opposite2);
+
+
+
+							self.radian=radian;
+							if(adjacent>=0&&opposite<0){
+								self.radian=self.radian+2*Math.PI;
+							}
+							self.degree=gv.radian_to_degree(self.radian);
+							// console.log(self.degree);
+						}
+
+
+						self.draw_trape();
+					}
+
+					function mouseup() {
+						jq(document).off('mousemove', mousemove);
+						jq(document).off('mouseup', mouseup);
+						self.draw_solars();
+						self.dom.find('.solars').show();
+					}
+				})
+			},
+			bind_polygon:function(){
+				var self=this;
+
+				self.dom.find('.polygon').each(function(i,elem){
+
+					elem=jq(elem);
+					var startX = 0, startY = 0, x = 0, y = 0;
+
+					elem.on('mousedown', function(e) {
+						// console.log(2);
+						e.preventDefault();
+						startX = e.pageX;
+						startY = e.pageY;
+						jq(document).on('mousemove', mousemove);
+						jq(document).on('mouseup', mouseup);
+						self.dom.find('.solars').hide();
+						self.set_act();
+					});
+
+					function mousemove(e) {
+						// console.log(1);
+						x = e.pageX - startX;
+						y = e.pageY - startY;
+						startX = e.pageX;
+						startY = e.pageY;
+
+						self.x+=x;
+						self.y+=y;
+
+						self.draw_trape();
+					}
+
+					function mouseup() {
+						jq(document).off('mousemove', mousemove);
+						jq(document).off('mouseup', mouseup);
+						self.dom.find('.solars').show();
+					}
+				})
+			},
+			draw_solars:function(){
+				var self=this;
+
+				// init
+
+					var s=self;
+
+					s.solars=[];
+
+					s.solar_width=30;
+					s.solar_height=15;
+
+					s.trape_top_width=gv.get_distance(s.d0,s.d1)
+					s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
+
+					s.rect={};
+					s.rect.left=Math.min(s.d0.x,s.d3.x);
+					s.rect.right=Math.max(s.d1.x,s.d2.x);
+					s.rect.width=s.rect.right-s.rect.left;
+					s.rect.height=s.d3.y;
+
+				// add all solars
+					var solars_bottom=0;
+					while(solars_bottom+s.solar_height<s.rect.height){
+						var solars_right=s.rect.left;
+						while(solars_right+s.solar_width<s.rect.right){
+							s.solars.push({
+								x:solars_right,
+								y:solars_bottom,
+							})
+							solars_right+=s.solar_width;
+						}
+						solars_bottom+=s.solar_height;
+					}
+
+				// count
+					var solars_total=0;
+					for(var i=0;i<Trape.prototype.trapes.length;i++){
+						var trape=Trape.prototype.trapes[i];
+						solars_total+=trape.solars.length;
+					}
+					jq('.solars_total').html(solars_total);
+
+				// draw
+					s.dom.find('.solar').remove();
+					for(var i=0;i<s.solars.length;i++){
+						var solar=s.solars[i];
+
+						var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'polygon'); //Create a path in SVG's namespace
+						newElement.setAttribute("class",'solar');
+						newElement.setAttribute("points",
+									solar.x+','+solar.y
+									+' '+(solar.x+s.solar_width)+','+solar.y
+									+' '+(solar.x+s.solar_width)+','+(solar.y+s.solar_height)
+									+' '+solar.x+','+(solar.y+s.solar_height)
+								); //Set path's data
+						newElement.style.fill = "rgba(0,0,0,.5)"; //Set stroke colour
+						newElement.style.stroke = "black"; //Set stroke colour
+						newElement.style.strokeWidth = "1"; //Set stroke colour
+
+						s.dom.find('svg g.solars')[0].appendChild(newElement);
+						if(s.is_flip){
+							s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg) scaleY(-1)');
+						}
+						else{
+							s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg)');
+						}
+					}
+			},
+			get_dot_radian:function(dot,origin){
+				/* params
+					dot: a point
+					origin: a point
+				*/
+				var self=this;
+				var radian;
+				origin=origin||{x:0,y:0};
+				var hypotenuse=gv.get_distance(origin,dot);
+				var opposite=origin.y-dot.y;
+				var asin=Math.asin(opposite/hypotenuse);
+				radian=asin;
+				if(dot.x<origin.x){
+					radian=Math.PI-asin;
+				}
+				if(dot.x>origin.x&&dot.y>origin.y){
+					radian=Math.PI*2+asin;
+				}
+				return radian;
+			},
+			set_dot_radian:function(dot,radian,origin){
+				/* params
+					dot: a point
+					origin: a point
+				*/
+				var self=this;
+				origin=origin||{x:0,y:0};
+				var hypotenuse=gv.get_distance(dot,origin);
+				var opposite=hypotenuse*Math.sin(radian);
+				var adjacent=hypotenuse*Math.cos(radian);
+				dot.x=adjacent+origin.x;
+				dot.y=-opposite+origin.y;
+			},
+			rotate_dot:function(dot,radian,origin){
+				/* params
+					origin: point
+				*/
+				var self=this;
+				origin=origin||{x:0,y:0};
+				var new_radian=self.get_dot_radian(dot,origin)+radian;
+				self.set_dot_radian(dot,new_radian,origin);
+			},
+			rotate:function(radian){
+				var self=this;
+				for(var i=1;i<4;i++){
+					self.rotate_dot(self['d'+i],radian);
+				}
+				self.radian=self.get_dot_radian(self.d1);
+				self.degree=gv.radian_to_degree(self.radian);
+			},
+			refresh_data:function(){
+				// var self=this;
+				// self.degree=self.get_dot_radian(self.d1);
+			},
+			set_act:function(){
+				var self=this;
+				for(var i=0;i<Trape.prototype.trapes.length;i++){
+					var trape=Trape.prototype.trapes[i];
+					trape.dom.removeClass('act');
+				}
+				Trape.prototype.trape_act=self;
+				self.dom.addClass('act');
+			},
+			delete:function(){
+				var self=this;
+				self.dom.remove();
+				Trape.prototype.trapes.splice(Trape.prototype.trapes.indexOf(self),1);
+			},
+			set_lean:function(){
+				var self=this;
+				self.dom.find('.arrows').removeAttr('display');
+			},
+		}
+
+
+	</script>
+
+	<script type="text/javascript">
+		var trape=new Trape('.main',{x:413,y:332});
+		// var trape2=new Trape('.main',{x:270,y:270});
+
+		trape.set_act();
+		// trape2.rotate(Math.PI/2);
+		// trape2.draw_trape();
+		// trape2.draw_solars();
+
+		jq('.btns').dblclick(function(e){
+			e.stopPropagation();
+		})
+
+		jq('.main').dblclick(function(e){
+			new Trape('.main',{
+				x:e.pageX,
+				y:e.pageY,
+			})
+		})
+
+		jq(document).mousemove(function(){
+			// console.log(trape.radian.toFixed(3)+' '+trape.degree.toFixed(0));
+		})
+
+		jq('.calc_solars').click(function(){
+			for(var i=0;i<Trape.prototype.trapes.length;i++){
+				var trape=Trape.prototype.trapes[i];
+				trape.draw_solars();
+			}
+		})
+
+		jq('.rotate_left').click(function(){
+			Trape.prototype.trape_act.rotate(Math.PI/2);
+			Trape.prototype.trape_act.draw_trape();
+			Trape.prototype.trape_act.draw_solars();
+		})
+
+		jq('.rotate_right').click(function(){
+			Trape.prototype.trape_act.rotate(-Math.PI/2);
+			Trape.prototype.trape_act.draw_trape();
+			Trape.prototype.trape_act.draw_solars();
+		})
+
+		jq('.delete').click(function(){
+			Trape.prototype.trape_act.delete();
+		})
+
+		jq('.set_lean').click(function(){
+			Trape.prototype.trape_act.set_lean();
+		})
+	</script>
+
+</body>
+</html>

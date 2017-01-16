@@ -28,7 +28,7 @@
     .btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
     .btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
     /*.arrows{display: none;}*/
-    .arrow{fill: red;}
+    .arrow{fill: red;display: none;}
     .arrow_up{ transform: translate(-32px,-70px) scale(.06); }
     .arrow_down{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
     .arrow_left{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
@@ -74,7 +74,7 @@
       <div class="btn rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
       <div class="btn rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
       <div class="btn delete" >删除</div>
-      <div class="btn set_lean" >设置倾斜方向</div>
+      <div class="btn set_lean" style="display: none;">设置倾斜方向</div>
     </div>
   </div>
 
@@ -634,7 +634,11 @@
     trape2.draw_trape();
     trape2.draw_solars();
 
-    jq(document).dblclick(function(e){
+    jq('.btns').dblclick(function(e){
+      e.stopPropagation();
+    })
+
+    jq('.main').dblclick(function(e){
       new Trape('.main',{
         x:e.pageX,
         y:e.pageY,

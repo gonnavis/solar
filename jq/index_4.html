@@ -204,16 +204,17 @@
 						startX = e.pageX;
 						startY = e.pageY;
 
+						var hypotenuse=x/Math.cos(s.radian);
 						if(i==0){
-							s.x+=x;
+							s.x+=Math.cos(s.radian)*hypotenuse;
+							s.y+=Math.sin(s.radian)*hypotenuse;
 
 							for(var j=1;j<4;j++){
-								s['d'+j].x-=x;
+								s['d'+j].x-=hypotenuse;
 							}
-
 						}
 						else{
-							s['d'+i].x+=x;
+							s['d'+i].x+=hypotenuse;
 						}
 
 

@@ -92,6 +92,7 @@
 		return radian*180/Math.PI;
 	}
 	gv.get_distance=function(a,b){
+		b=b||{x:0,y:0};
 		return Math.sqrt(
 				Math.pow((a.x-b.x),2)
 				+Math.pow((a.y-b.y),2)
@@ -138,8 +139,8 @@
 			var s=this;
 
 			for(var i=1;i<4;i++){
-				s['d'+i].lx=Math.cos(s.radian)*s['d'+i].x;
-				s['d'+i].ly=Math.sin(s.radian)*s['d'+i].x;
+				s['d'+i].lx=Math.cos(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]);
+				s['d'+i].ly=-(Math.sin(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]));
 
 				s['d'+i].wx=s.x+s['d'+i].lx;
 				s['d'+i].wy=s.y+s['d'+i].ly;
@@ -463,6 +464,13 @@
 					}
 				}
 		},
+		mod_radian:function(radian){
+			radian=radian%(2*Math.PI);
+			if(radian<0){
+				radian=2*Math.PI-radian;
+			}
+			return radian;
+		},
 		get_dot_radian:function(dot,origin){
 			/* params
 				dot: a point
@@ -481,6 +489,7 @@
 			if(dot.x>origin.x&&dot.y>origin.y){
 				radian=Math.PI*2+asin;
 			}
+			radian=s.mod_radian(radian);
 			return radian;
 		},
 		set_dot_radian:function(dot,radian,origin){
@@ -509,11 +518,7 @@
 			var s=this;
 
 			s.radian-=radian;
-			s.radian=s.radian%(2*Math.PI);
-			if(s.radian<0){
-				s.radian=2*Math.PI-s.radian;
-			}
-			// log(s.radian);
+			s.radian=s.mod_radian(s.radian);
 
 			s.draw();
 		},

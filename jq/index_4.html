@@ -138,6 +138,9 @@
 		get_data:function(){
 			var s=this;
 
+			s.trape_top_width=gv.get_distance(s.d0,s.d1)
+			s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
+
 			for(var i=1;i<4;i++){
 				s['d'+i].lx=Math.cos(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]);
 				s['d'+i].ly=-(Math.sin(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]));
@@ -207,26 +210,29 @@
 				elem=jq(elem);
 				var startX = 0, startY = 0, x = 0, y = 0;
 
-				if(i==0){
-
-				}
-				else if(i==1){
-					var origin_width=s.trape_top_width;
-					var origin_x=s.d1.x;
-				}
-				else if(i==2){
-					var origin_width=s.trape_bottom_width;
-					var origin_x=s.d2.x;
-				}
-				else if(i==3){
-					var origin_width=s.trape_bottom_width;
-					var origin_x=s.d3.x;
-				}
+				var origin_width=0;
+				var origin_x=0
 
 				elem.on('mousedown', function(e) {
 					e.preventDefault();
 					startX = e.pageX;
 					startY = e.pageY;
+
+					if(i==0){
+
+					}
+					else if(i==1){
+						origin_width=s.trape_top_width;
+						origin_x=s.d1.x;
+					}
+					else if(i==2){
+						origin_width=s.trape_bottom_width;
+						origin_x=s.d2.x;
+					}
+					else if(i==3){
+						origin_width=s.trape_bottom_width;
+						origin_x=s.d3.x;
+					}
 
 					jq(document).on('mousemove', mousemove);
 					jq(document).on('mouseup', mouseup);
@@ -267,6 +273,16 @@
 					else if(i==3){
 						var mx=e.pageX-(s.d2.wx);
 						var my=-(e.pageY-s.d2.wy);
+
+						var x1=-origin_width/Math.cos(s.radian);
+						// var b=s.mod_radian(Math.PI/2-s.radian+Math.PI);
+						var b=Math.PI/2-s.radian;
+						var y1=Math.tan(b)*x1;
+						var y2=y1-my;
+						var x2=x1*y2/y1;
+						var h=mx-x2;
+						var r=Math.cos(s.radian)*h;
+						s.d3.x=origin_x+r;
 					}
 
 					s.draw();
@@ -406,9 +422,6 @@
 
 				s.solar_width=30;
 				s.solar_height=15;
-
-				s.trape_top_width=gv.get_distance(s.d0,s.d1)
-				s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
 
 				s.rect={};
 				s.rect.left=Math.min(s.d0.x,s.d3.x);
@@ -551,9 +564,9 @@
 
 <script type="text/javascript">
 	var trape=new Trape('.main',{
-		x:413,
-		y:332,
-		d3:{x:-180,y:80},
+		x:636,
+		y:270,
+		d3:{x:-20,y:80},
 	});
 	// var trape2=new Trape('.main',{x:270,y:270});
 

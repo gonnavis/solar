@@ -108,10 +108,10 @@
 		s.dom=jq('.proto.trape_wrap').clone().removeClass('proto').show();
 		s.x=option.x||300;
 		s.y=option.y||300;
-		s.d0={x:0,y:0};
-		s.d1={x:100,y:0};
-		s.d2={x:120,y:80};
-		s.d3={x:-20,y:80};
+		s.d0=option.d0||{x:0,y:0};
+		s.d1=option.d1||{x:100,y:0};
+		s.d2=option.d2||{x:120,y:80};
+		s.d3=option.d3||{x:-20,y:80};
 		s.radian=0;
 		s.degree=0;
 		s.precison=6;
@@ -122,21 +122,37 @@
 		trapes:[],
 		init:function(parent){
 			var s=this;
+
+			jq(parent).append(s.dom);
+
+			s.draw();
+
+			s.set_act();
+
 			s.bind_dots();
 			s.bind_polygon();
 			s.bind_bottom_line();
 			s.bind_mask();
-			s.draw();
-			jq(parent).append(s.dom);
-			s.draw_solars();
-			s.set_act();
+		},
+		get_data:function(){
+			var s=this;
+
+			for(var i=1;i<4;i++){
+				s['d'+i].lx=Math.cos(s.radian)*s['d'+i].x;
+				s['d'+i].ly=Math.sin(s.radian)*s['d'+i].x;
+
+				s['d'+i].wx=s.x+s['d'+i].lx;
+				s['d'+i].wy=s.y+s['d'+i].ly;
+			}
 		},
 		draw:function(){
 			var s=this;
+			s.get_data();
 			s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate('+-s.radian+'rad)');
 			// s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate(60deg)');
 			s.draw_polygon();
 			s.draw_dots();
+			s.draw_solars();
 		},
 		draw_polygon:function(){
 			var s=this;
@@ -189,7 +205,22 @@
 
 				elem=jq(elem);
 				var startX = 0, startY = 0, x = 0, y = 0;
-				var origin_width=s.d1.x;
+
+				if(i==0){
+
+				}
+				else if(i==1){
+					var origin_width=s.trape_top_width;
+					var origin_x=s.d1.x;
+				}
+				else if(i==2){
+					var origin_width=s.trape_bottom_width;
+					var origin_x=s.d2.x;
+				}
+				else if(i==3){
+					var origin_width=s.trape_bottom_width;
+					var origin_x=s.d3.x;
+				}
 
 				elem.on('mousedown', function(e) {
 					e.preventDefault();
@@ -198,36 +229,52 @@
 
 					jq(document).on('mousemove', mousemove);
 					jq(document).on('mouseup', mouseup);
-					s.dom.find('.solars').hide();
+					// s.dom.find('.solars').hide();
 					s.set_act();
 				});
 
 				function mousemove(e) {
-					mx=e.pageX-s.x;
-					my=-(e.pageY-s.y);
-					// mx = e.pageX-(s.x+s.d1.lx);
-					// my = -(e.pageY-(s.y-s.d1.ly));
+					if(i==0){
 
-					var x1=origin_width/Math.cos(s.radian);
-					var b=Math.PI/2-s.radian;
-					var y1=Math.tan(b)*x1;
-					var y2=y1-my;
-					var x2=x1*y2/y1;
-					var h=mx-x2;
-					var r=Math.cos(s.radian)*h;
-					s.d1.x=origin_width+r;
+					}
+					else if(i==1){
+						var mx=e.pageX-s.x;
+						var my=-(e.pageY-s.y);
+
+						var x1=origin_width/Math.cos(s.radian);
+						var b=Math.PI/2-s.radian;
+						var y1=Math.tan(b)*x1;
+						var y2=y1-my;
+						var x2=x1*y2/y1;
+						var h=mx-x2;
+						var r=Math.cos(s.radian)*h;
+						s.d1.x=origin_x+r;
+					}
+					else if(i==2){
+						var mx=e.pageX-(s.d3.wx);
+						var my=-(e.pageY-s.d3.wy);
+
+						var x1=origin_width/Math.cos(s.radian);
+						var b=Math.PI/2-s.radian;
+						var y1=Math.tan(b)*x1;
+						var y2=y1-my;
+						var x2=x1*y2/y1;
+						var h=mx-x2;
+						var r=Math.cos(s.radian)*h;
+						s.d2.x=origin_x+r;
+					}
+					else if(i==3){
+						var mx=e.pageX-(s.d2.wx);
+						var my=-(e.pageY-s.d2.wy);
+					}
 
 					s.draw();
-					if(mx>100){
-						// debugger;
-					}
 				}
 
 				function mouseup() {
 					jq(document).off('mousemove', mousemove);
 					jq(document).off('mouseup', mouseup);
-					s.draw_solars();
-					s.dom.find('.solars').show();
+					// s.dom.find('.solars').show();
 				}
 			})
 		},
@@ -245,7 +292,7 @@
 					startY = e.pageY;
 					jq(document).on('mousemove', mousemove);
 					jq(document).on('mouseup', mouseup);
-					s.dom.find('.solars').hide();
+					// s.dom.find('.solars').hide();
 					s.set_act();
 				});
 
@@ -264,7 +311,7 @@
 				function mouseup() {
 					jq(document).off('mousemove', mousemove);
 					jq(document).off('mouseup', mouseup);
-					s.dom.find('.solars').show();
+					// s.dom.find('.solars').show();
 				}
 			})
 		},
@@ -468,9 +515,6 @@
 			}
 			// log(s.radian);
 
-			s.d1.lx=Math.cos(s.radian)*s.d1.x;
-			s.d1.ly=Math.sin(s.radian)*s.d1.x;
-
 			s.draw();
 		},
 		refresh_data:function(){
@@ -501,7 +545,11 @@
 </script>
 
 <script type="text/javascript">
-	var trape=new Trape('.main',{x:413,y:332});
+	var trape=new Trape('.main',{
+		x:413,
+		y:332,
+		d3:{x:-180,y:80},
+	});
 	// var trape2=new Trape('.main',{x:270,y:270});
 
 	trape.set_act();
@@ -534,13 +582,11 @@
 	jq('.rotate_left').click(function(){
 		Trape.prototype.trape_act.rotate(Math.PI/2);
 		Trape.prototype.trape_act.draw();
-		Trape.prototype.trape_act.draw_solars();
 	})
 
 	jq('.rotate_right').click(function(){
 		Trape.prototype.trape_act.rotate(-Math.PI/2);
 		Trape.prototype.trape_act.draw();
-		Trape.prototype.trape_act.draw_solars();
 	})
 
 	jq('.delete').click(function(){

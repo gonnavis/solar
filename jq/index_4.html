@@ -139,6 +139,8 @@
 		get_data:function(){
 			var s=this;
 
+			s.height=s.d3.y-s.d0.y;
+
 			s.trape_top_width=gv.get_distance(s.d0,s.d1)
 			s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
 
@@ -261,9 +263,10 @@
 						var h=mx-x2;
 						var r=Math.cos(s.radian)*h;
 						s.d0.x=origin_x+r;
-						// for(var i=1;i<4;i++){
-						// 	s['d'+i].x+=r;
-						// }
+
+						if(s.d0.x>s.d1.x){
+							s.d0.x=s.d1.x-4;
+						}
 					}
 					else if(i==1){
 						var mx=e.pageX-s.d0.wx;
@@ -277,6 +280,10 @@
 						var h=mx-x2;
 						var r=Math.cos(s.radian)*h;
 						s.d1.x=origin_x+r;
+
+						if(s.d1.x<s.d0.x){
+							s.d1.x=s.d0.x+4;
+						}
 					}
 					else if(i==2){
 						var mx=e.pageX-(s.d3.wx);
@@ -290,6 +297,10 @@
 						var h=mx-x2;
 						var r=Math.cos(s.radian)*h;
 						s.d2.x=origin_x+r;
+
+						if(s.d2.x<s.d3.x){
+							s.d2.x=s.d3.x+4;
+						}
 					}
 					else if(i==3){
 						var mx=e.pageX-(s.d2.wx);
@@ -304,6 +315,10 @@
 						var h=mx-x2;
 						var r=Math.cos(s.radian)*h;
 						s.d3.x=origin_x+r;
+
+						if(s.d3.x>s.d2.x){
+							s.d3.x=s.d2.x-4;
+						}
 					}
 
 					s.draw();
@@ -473,6 +488,62 @@
 						solars_right+=s.solar_width;
 					}
 					solars_bottom+=s.solar_height;
+				}
+
+			// delete overflow solars
+				for(var i=0;i<s.solars.length;i++){
+					var solar=s.solars[i];
+
+					// debugger;
+					var left_most;
+					if(s.d0.x>=s.d3.x){
+						var x=s.d0.x-s.d3.x;
+						var x1=x*solar.y/s.height;
+						left_most=-x1;
+						if(solar.x<left_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+					else{
+						var x=s.d3.x-s.d0.x;
+						var x1=x*(solar.y+s.solar_height)/s.height;
+						left_most=x1;
+						if(solar.x<left_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+
+					var right_most;
+					if(s.d2.x>=s.d1.x){
+						var x=s.d2.x-s.d1.x;
+						var x1=x*solar.y/s.height;
+						right_most=s.d1.x+x1;
+						if(solar.x+s.solar_width>right_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+					else{
+						var x=s.d1.x-s.d2.x;
+						var x1=x*(solar.y+s.solar_height)/s.height;
+						right_most=s.d1.x-x1;
+						if(solar.x+s.solar_width>right_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+				}
+				for(var i=0;i<s.solars.length;){
+					var solar=s.solars[i];
+
+					if(solar.is_delete){
+						s.solars.splice(i,1);
+					}
+					else{
+						i++;
+					}
 				}
 
 			// count

@@ -52,7 +52,7 @@
 			<line class="right" stroke-width="1" stroke="orange"></line>
 			<line class="bottom" stroke-width="2" stroke="red"></line>
 			<line class="left" stroke-width="1" stroke="orange"></line>
-			<circle class="dot d0" r="4" ></circle>
+			<circle class="dot d0" r="4" stroke="red" ></circle>
 			<circle class="dot d1" r="4" ></circle>
 			<circle class="dot d2" r="4" ></circle>
 			<circle class="dot d3" r="4" ></circle>
@@ -113,6 +113,7 @@
 		s.d1=option.d1||{x:100,y:0};
 		s.d2=option.d2||{x:120,y:80};
 		s.d3=option.d3||{x:-20,y:80};
+		s.act_dot_index;
 		s.radian=0;
 		s.degree=0;
 		s.precison=6;
@@ -141,9 +142,11 @@
 			s.trape_top_width=gv.get_distance(s.d0,s.d1)
 			s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
 
-			for(var i=1;i<4;i++){
-				s['d'+i].lx=Math.cos(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]);
-				s['d'+i].ly=-(Math.sin(s.get_dot_radian(s['d'+i])+s.radian)*gv.get_distance(s['d'+i]));
+			for(var i=0;i<4;i++){
+				s['d'+i].lx=Math.cos(s.get_dot_radian(s['d'+i])+s.radian)
+					*gv.get_distance(s['d'+i]);
+				s['d'+i].ly=-(Math.sin(s.get_dot_radian(s['d'+i])+s.radian)
+					*gv.get_distance(s['d'+i]));
 
 				s['d'+i].wx=s.x+s['d'+i].lx;
 				s['d'+i].wy=s.y+s['d'+i].ly;
@@ -218,8 +221,10 @@
 					startX = e.pageX;
 					startY = e.pageY;
 
+					s.act_dot_index=i;
 					if(i==0){
-
+						origin_width=s.trape_top_width;
+						origin_x=s.d0.x;
 					}
 					else if(i==1){
 						origin_width=s.trape_top_width;
@@ -241,12 +246,28 @@
 				});
 
 				function mousemove(e) {
-					if(i==0){
 
+					// console.log('mousemove i: '+i);
+					if(i==0){
+						var mx=e.pageX-(s.d1.wx);
+						var my=-(e.pageY-s.d1.wy);
+
+						var x1=-origin_width/Math.cos(s.radian);
+						// var b=s.mod_radian(Math.PI/2-s.radian+Math.PI);
+						var b=Math.PI/2-s.radian;
+						var y1=Math.tan(b)*x1;
+						var y2=y1-my;
+						var x2=x1*y2/y1;
+						var h=mx-x2;
+						var r=Math.cos(s.radian)*h;
+						s.d0.x=origin_x+r;
+						// for(var i=1;i<4;i++){
+						// 	s['d'+i].x+=r;
+						// }
 					}
 					else if(i==1){
-						var mx=e.pageX-s.x;
-						var my=-(e.pageY-s.y);
+						var mx=e.pageX-s.d0.wx;
+						var my=-(e.pageY-s.d0.wy);
 
 						var x1=origin_width/Math.cos(s.radian);
 						var b=Math.PI/2-s.radian;
@@ -289,6 +310,17 @@
 				}
 
 				function mouseup() {
+
+					if(s.act_dot_index==0){
+						var drag_distance=-(s.d0.x);
+						for(var i=0;i<4;i++){
+							s['d'+i].x+=drag_distance;
+						}
+						s.x-=Math.cos(s.radian)*drag_distance;
+						s.y+=Math.sin(s.radian)*drag_distance;
+						s.draw();
+					}
+
 					jq(document).off('mousemove', mousemove);
 					jq(document).off('mouseup', mouseup);
 					// s.dom.find('.solars').show();
@@ -493,6 +525,9 @@
 			var radian;
 			origin=origin||{x:0,y:0};
 			var hypotenuse=gv.get_distance(origin,dot);
+			if(hypotenuse==0){
+				return 0;
+			}
 			var opposite=origin.y-dot.y;
 			var asin=Math.asin(opposite/hypotenuse);
 			radian=asin;

@@ -48,9 +48,9 @@
 		<g class="trape">
 			<polygon class="trape_fill" points="" style="" />
 			<g class="solars"></g>
-			<line class="top" stroke-width="2" stroke="red"></line>
+			<line class="top" stroke-width="3" stroke="red"></line>
 			<line class="right" stroke-width="1" stroke="orange"></line>
-			<line class="bottom" stroke-width="2" stroke="red"></line>
+			<line class="bottom" stroke-width="3" stroke="red"></line>
 			<line class="left" stroke-width="1" stroke="orange"></line>
 			<circle class="dot d0" r="4" stroke="red" ></circle>
 			<circle class="dot d1" r="4" ></circle>
@@ -387,34 +387,35 @@
 				elem=jq(elem);
 				var startX = 0, startY = 0, x = 0, y = 0;
 
+				var origin_height=0;
+
 				elem.on('mousedown', function(e) {
 					e.preventDefault();
 					startX = e.pageX;
 					startY = e.pageY;
+
+					origin_height=s.d3.y;
+
 					jq(document).on('mousemove', mousemove);
 					jq(document).on('mouseup', mouseup);
 				});
 
 				function mousemove(e) {
-					x = e.pageX - startX;
-					y = e.pageY - startY;
-					startX = e.pageX;
-					startY = e.pageY;
 
-					var hypotenuse;
-					var radian=s.radian+Math.PI/2;
-					if(radian==0){
-						hypotenuse=x;
-					}
-					else if(radian==Math.PI){
-						hypotenuse=-x;
-					}
-					else{
-						hypotenuse=y/Math.sin(radian);
-					}
+					var mx=e.pageX-(startX);
+					var my=-(e.pageY-startY);
 
-					s.d2.y+=hypotenuse;
-					s.d3.y+=hypotenuse;
+					var a=s.radian-(Math.PI/2);
+					var o=Math.tan(a)*my;
+					var p=o+mx;
+					var r=Math.cos(a)*p;
+					s.d2.y=origin_height+r;
+					s.d3.y=origin_height+r;
+
+					if(s.d2.y<4){
+						s.d2.y=4;
+						s.d3.y=4;
+					}
 
 					s.draw();
 				}

@@ -14,6 +14,7 @@
 	</script>
 
 	<!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css"> -->
+	<link rel="stylesheet" type="text/css" href="../lib/font_j56o52g1hhq6w29.css">
 	<style type="text/css">
 
 		html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
@@ -24,7 +25,9 @@
 		svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
 		.dot{cursor: ew-resize;}
 		.trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
-		.trape.act .trape_fill{fill:rgba(255,100,0,.5);}
+		.trape_wrap.act .trape_fill{fill:rgba(255,100,0,.5);}
+		.trape_wrap.act line.top{stroke-width:3;}
+		.trape_wrap.act line.bottom{stroke-width:3;}
 		.label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 		.btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
 		.btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
@@ -34,6 +37,7 @@
 		.arrow_down{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
 		.arrow_left{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
 		.arrow_right{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
+		line.top{cursor: ns-resize;}
 		line.bottom{cursor: ns-resize;}
 		.mask{position: absolute;width: 100%;height: 100%;pointer-events: all;cursor: wait;}
 		.solars{pointer-events: none;}
@@ -43,14 +47,13 @@
 <body>
 
 <div class="trape_wrap proto" style="display: none;">
-	<div class="mask"></div>
 	<svg>
 		<g class="trape">
 			<polygon class="trape_fill" points="" style="" />
 			<g class="solars"></g>
-			<line class="top" stroke-width="3" stroke="red"></line>
+			<line class="top" stroke-width="1" stroke="red"></line>
 			<line class="right" stroke-width="1" stroke="orange"></line>
-			<line class="bottom" stroke-width="3" stroke="red"></line>
+			<line class="bottom" stroke-width="1" stroke="red"></line>
 			<line class="left" stroke-width="1" stroke="orange"></line>
 			<circle class="dot d0" r="4" stroke="red" ></circle>
 			<circle class="dot d1" r="4" ></circle>
@@ -64,6 +67,7 @@
 			</g>
 		</g>
 	</svg>
+	<div class="mask" style="display: none;"></div>
 </div>
 
 <div class="main">
@@ -97,6 +101,18 @@
 				Math.pow((a.x-b.x),2)
 				+Math.pow((a.y-b.y),2)
 			)
+	}
+	gv.sin=function(radian){
+		var r=Math.sin(radian);
+		return r;
+	}
+	gv.cos=function(radian){
+		var r=Math.cos(radian);
+		return r;
+	}
+	gv.tan=function(radian){
+		var r=Math.tan(radian);
+		return r;
 	}
 </script>
 
@@ -133,8 +149,11 @@
 
 			s.bind_dots();
 			s.bind_polygon();
+			s.bind_top_line();
 			s.bind_bottom_line();
 			s.bind_mask();
+			s.bind_control_key();
+			s.bind_trape();
 		},
 		get_data:function(){
 			var s=this;
@@ -145,9 +164,9 @@
 			s.trape_bottom_width=gv.get_distance(s.d3,s.d2)
 
 			for(var i=0;i<4;i++){
-				s['d'+i].lx=Math.cos(s.get_dot_radian(s['d'+i])+s.radian)
+				s['d'+i].lx=gv.cos(s.get_dot_radian(s['d'+i])+s.radian)
 					*gv.get_distance(s['d'+i]);
-				s['d'+i].ly=-(Math.sin(s.get_dot_radian(s['d'+i])+s.radian)
+				s['d'+i].ly=-(gv.sin(s.get_dot_radian(s['d'+i])+s.radian)
 					*gv.get_distance(s['d'+i]));
 
 				s['d'+i].wx=s.x+s['d'+i].lx;
@@ -251,17 +270,23 @@
 
 					// console.log('mousemove i: '+i);
 					if(i==0){
-						var mx=e.pageX-(s.d1.wx);
-						var my=-(e.pageY-s.d1.wy);
+						var mx=e.pageX-startX;
+						var my=-(e.pageY-startY);
 
-						var x1=-origin_width/Math.cos(s.radian);
-						// var b=s.mod_radian(Math.PI/2-s.radian+Math.PI);
-						var b=Math.PI/2-s.radian;
-						var y1=Math.tan(b)*x1;
-						var y2=y1-my;
-						var x2=x1*y2/y1;
-						var h=mx-x2;
-						var r=Math.cos(s.radian)*h;
+						var a=s.radian;
+						var tan=gv.tan(a);
+						if(s.radian==Math.PI/2){
+							r=my;
+						}
+						else if(s.radian==3*Math.PI/2){
+							r=-my;
+						}
+						else{
+							var o=tan*my;
+							var p=o+mx;
+							var r=gv.cos(a)*p;
+						}
+
 						s.d0.x=origin_x+r;
 
 						if(s.d0.x>s.d1.x){
@@ -269,16 +294,23 @@
 						}
 					}
 					else if(i==1){
-						var mx=e.pageX-s.d0.wx;
-						var my=-(e.pageY-s.d0.wy);
+						var mx=e.pageX-startX;
+						var my=-(e.pageY-startY);
 
-						var x1=origin_width/Math.cos(s.radian);
-						var b=Math.PI/2-s.radian;
-						var y1=Math.tan(b)*x1;
-						var y2=y1-my;
-						var x2=x1*y2/y1;
-						var h=mx-x2;
-						var r=Math.cos(s.radian)*h;
+						var a=s.radian;
+						var tan=gv.tan(a);
+						if(s.radian==Math.PI/2){
+							r=my;
+						}
+						else if(s.radian==3*Math.PI/2){
+							r=-my;
+						}
+						else{
+							var o=tan*my;
+							var p=o+mx;
+							var r=gv.cos(a)*p;
+						}
+
 						s.d1.x=origin_x+r;
 
 						if(s.d1.x<s.d0.x){
@@ -286,16 +318,23 @@
 						}
 					}
 					else if(i==2){
-						var mx=e.pageX-(s.d3.wx);
-						var my=-(e.pageY-s.d3.wy);
+						var mx=e.pageX-startX;
+						var my=-(e.pageY-startY);
 
-						var x1=origin_width/Math.cos(s.radian);
-						var b=Math.PI/2-s.radian;
-						var y1=Math.tan(b)*x1;
-						var y2=y1-my;
-						var x2=x1*y2/y1;
-						var h=mx-x2;
-						var r=Math.cos(s.radian)*h;
+						var a=s.radian;
+						var tan=gv.tan(a);
+						if(s.radian==Math.PI/2){
+							r=my;
+						}
+						else if(s.radian==3*Math.PI/2){
+							r=-my;
+						}
+						else{
+							var o=tan*my;
+							var p=o+mx;
+							var r=gv.cos(a)*p;
+						}
+
 						s.d2.x=origin_x+r;
 
 						if(s.d2.x<s.d3.x){
@@ -303,17 +342,24 @@
 						}
 					}
 					else if(i==3){
-						var mx=e.pageX-(s.d2.wx);
-						var my=-(e.pageY-s.d2.wy);
+						var mx=e.pageX-startX;
+						var my=-(e.pageY-startY);
 
-						var x1=-origin_width/Math.cos(s.radian);
-						// var b=s.mod_radian(Math.PI/2-s.radian+Math.PI);
-						var b=Math.PI/2-s.radian;
-						var y1=Math.tan(b)*x1;
-						var y2=y1-my;
-						var x2=x1*y2/y1;
-						var h=mx-x2;
-						var r=Math.cos(s.radian)*h;
+						var a=s.radian;
+						var tan=gv.tan(a);
+						if(s.radian==Math.PI/2){
+							r=my;
+						}
+						else if(s.radian==3*Math.PI/2){
+							r=-my;
+						}
+						else{
+							var o=tan*my;
+							var p=o+mx;
+							var r=gv.cos(a)*p;
+						}
+
+
 						s.d3.x=origin_x+r;
 
 						if(s.d3.x>s.d2.x){
@@ -331,8 +377,8 @@
 						for(var i=0;i<4;i++){
 							s['d'+i].x+=drag_distance;
 						}
-						s.x-=Math.cos(s.radian)*drag_distance;
-						s.y+=Math.sin(s.radian)*drag_distance;
+						s.x-=gv.cos(s.radian)*drag_distance;
+						s.y+=gv.sin(s.radian)*drag_distance;
 						s.draw();
 					}
 
@@ -379,6 +425,64 @@
 				}
 			})
 		},
+		bind_top_line:function(){
+			var s=this;
+
+			s.dom.find('line.top').each(function(i,elem){
+
+				elem=jq(elem);
+				var startX = 0, startY = 0, x = 0, y = 0;
+
+				var origin_height=0;
+
+				elem.on('mousedown', function(e) {
+					e.preventDefault();
+					startX = e.pageX;
+					startY = e.pageY;
+
+					origin_height=s.d3.y;
+
+					jq(document).on('mousemove', mousemove);
+					jq(document).on('mouseup', mouseup);
+				});
+
+				function mousemove(e) {
+
+					var mx=e.pageX-(startX);
+					var my=-(e.pageY-startY);
+
+					var a=s.radian-(Math.PI/2);
+					var o=gv.tan(a)*my;
+					var p=o+mx;
+					var r=gv.cos(a)*p;
+					s.d0.y=r;
+					s.d1.y=r;
+
+					if(s.d2.y-s.d0.y<4){
+						s.d0.y=s.d2.y-4;
+						s.d1.y=s.d2.y-4;
+					}
+
+					s.draw();
+				}
+
+				function mouseup() {
+
+					var drag_distance=-s.d0.y;
+					for(var i=0;i<4;i++){
+						s['d'+i].y+=drag_distance;
+					}
+
+					var a=s.radian+(Math.PI/2);
+					s.x+=gv.cos(a)*drag_distance;
+					s.y-=gv.sin(a)*drag_distance;
+					s.draw();
+
+					jq(document).off('mousemove', mousemove);
+					jq(document).off('mouseup', mouseup);
+				}
+			})
+		},
 		bind_bottom_line:function(){
 			var s=this;
 
@@ -406,9 +510,9 @@
 					var my=-(e.pageY-startY);
 
 					var a=s.radian-(Math.PI/2);
-					var o=Math.tan(a)*my;
+					var o=gv.tan(a)*my;
 					var p=o+mx;
-					var r=Math.cos(a)*p;
+					var r=gv.cos(a)*p;
 					s.d2.y=origin_height+r;
 					s.d3.y=origin_height+r;
 
@@ -450,13 +554,40 @@
 					startX = e.pageX;
 					startY = e.pageY;
 
-					s.rotate(-x/300);
+					s.rotate(x/300);
 				}
 
 				function mouseup() {
 					jq(document).off('mousemove', mousemove);
 					jq(document).off('mouseup', mouseup);
 				}
+			})
+		},
+		bind_control_key:function(){
+			var s=this;
+
+			jq(document).on('keydown',function(e){
+				if(e.key=='Control'){
+					Trape.prototype.trape_act.dom.find('.mask').show();
+				}
+			})
+
+			jq(document).on('keyup',function(e){
+				if(e.key=='Control'){
+					for(var i=0;i<Trape.prototype.trapes.length;i++){
+						var trape=Trape.prototype.trapes[i];
+						trape.dom.find('.mask').hide();
+					}
+				}
+			})
+		},
+		bind_trape:function(){
+			var s=this;
+			s.dom.on('mousedown',function(){
+				s.dom.find('.solars').hide();
+			})
+			jq(document).on('mouseup',function(){
+				jq('.solars').show();
 			})
 		},
 		draw_solars:function(){
@@ -584,7 +715,7 @@
 		mod_radian:function(radian){
 			radian=radian%(2*Math.PI);
 			if(radian<0){
-				radian=2*Math.PI-radian;
+				radian=2*Math.PI+radian;
 			}
 			return radian;
 		},
@@ -620,8 +751,8 @@
 			var s=this;
 			origin=origin||{x:0,y:0};
 			var hypotenuse=gv.get_distance(dot,origin);
-			var opposite=hypotenuse*Math.sin(radian);
-			var adjacent=hypotenuse*Math.cos(radian);
+			var opposite=hypotenuse*gv.sin(radian);
+			var adjacent=hypotenuse*gv.cos(radian);
 			dot.x=adjacent+origin.x;
 			dot.y=-opposite+origin.y;
 		},
@@ -637,7 +768,7 @@
 		rotate:function(radian){
 			var s=this;
 
-			s.radian-=radian;
+			s.radian+=radian;
 			s.radian=s.mod_radian(s.radian);
 
 			s.draw();

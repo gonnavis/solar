@@ -28,6 +28,7 @@
 		.trape_wrap.act .trape_fill{fill:rgba(255,100,0,.5);}
 		.trape_wrap.act line.top{stroke-width:3;}
 		.trape_wrap.act line.bottom{stroke-width:3;}
+		.trape_wrap.act .dot{r:4;}
 		.label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 		.btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
 		.btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
@@ -55,10 +56,10 @@
 			<line class="right" stroke-width="1" stroke="orange"></line>
 			<line class="bottom" stroke-width="1" stroke="red"></line>
 			<line class="left" stroke-width="1" stroke="orange"></line>
-			<circle class="dot d0" r="4" stroke="red" ></circle>
-			<circle class="dot d1" r="4" ></circle>
-			<circle class="dot d2" r="4" ></circle>
-			<circle class="dot d3" r="4" ></circle>
+			<circle class="dot d0" r="2" stroke="black" stroke-width="1" fill="red"></circle>
+			<circle class="dot d1" r="2" ></circle>
+			<circle class="dot d2" r="2" ></circle>
+			<circle class="dot d3" r="2" ></circle>
 			<g class="arrows">
 				<path class="arrow arrow_up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
 				<path class="arrow arrow_down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
@@ -583,12 +584,12 @@
 		},
 		bind_trape:function(){
 			var s=this;
-			s.dom.on('mousedown',function(){
-				s.dom.find('.solars').hide();
-			})
-			jq(document).on('mouseup',function(){
-				jq('.solars').show();
-			})
+			// s.dom.on('mousedown',function(){
+			// 	s.dom.find('.solars').hide();
+			// })
+			// jq(document).on('mouseup',function(){
+			// 	jq('.solars').show();
+			// })
 		},
 		draw_solars:function(){
 			var s=this;
@@ -602,25 +603,85 @@
 				s.solar_width=30;
 				s.solar_height=15;
 
-				s.rect={};
-				s.rect.left=Math.min(s.d0.x,s.d3.x);
-				s.rect.right=Math.max(s.d1.x,s.d2.x);
-				s.rect.width=s.rect.right-s.rect.left;
-				s.rect.height=s.d3.y;
+				s.outter_rect={};
+				s.outter_rect.left=Math.min(s.d0.x,s.d3.x);
+				s.outter_rect.right=Math.max(s.d1.x,s.d2.x);
+				s.outter_rect.width=s.outter_rect.right-s.outter_rect.left;
+				s.outter_rect.height=s.d3.y;
 
 			// add all solars
-				var solars_bottom=0;
-				while(solars_bottom+s.solar_height<s.rect.height){
-					var solars_right=s.rect.left;
-					while(solars_right+s.solar_width<s.rect.right){
-						s.solars.push({
-							x:solars_right,
-							y:solars_bottom,
-						})
-						solars_right+=s.solar_width;
-					}
-					solars_bottom+=s.solar_height;
+
+				var solars_top_padding;
+				var solars_left_padding;
+
+				if(s.trape_bottom_width>=s.trape_top_width){
+					solars_top_padding=s.height%s.solar_height;
 				}
+				else{
+					solars_top_padding=0;
+				}
+
+				if(Math.abs(s.d0.x-s.d3.x) <= Math.abs(s.d1.x-s.d2.x) ){
+
+					s.small_rect={};
+					s.small_rect.left=Math.min(s.d0.x,s.d3.x);
+					s.small_rect.right=Math.max(s.d0.x,s.d3.x);
+					s.small_rect.width=s.small_rect.right-s.small_rect.left;
+					s.small_rect.height=s.d3.y;
+
+					s.big_rect={};
+					s.big_rect.left=Math.max(s.d0.x,s.d3.x);
+					s.big_rect.right=Math.max(s.d1.x,s.d2.x);
+					s.big_rect.width=s.big_rect.right-s.big_rect.left;
+					s.big_rect.height=s.d3.y;
+
+					big_solars_left_padding=0;
+					small_solars_left_padding=s.small_rect.width%s.solar_width;
+				}
+				else{
+
+					s.small_rect={};
+					s.small_rect.left=Math.min(s.d1.x,s.d2.x);
+					s.small_rect.right=Math.max(s.d1.x,s.d2.x);
+					s.small_rect.width=s.small_rect.right-s.small_rect.left;
+					s.small_rect.height=s.d3.y;
+
+					s.big_rect={};
+					s.big_rect.left=Math.min(s.d0.x,s.d3.x);
+					s.big_rect.right=Math.min(s.d1.x,s.d2.x);
+					s.big_rect.width=s.big_rect.right-s.big_rect.left;
+					s.big_rect.height=s.d3.y;
+
+					big_solars_left_padding=s.big_rect.width%s.solar_width;
+					small_solars_left_padding=0;
+				}
+
+				// big_rect
+					var solars_bottom=solars_top_padding;
+					while(solars_bottom+s.solar_height<=s.big_rect.height){
+						var solars_right=s.big_rect.left+big_solars_left_padding;
+						while(solars_right+s.solar_width<=s.big_rect.right){
+							s.solars.push({
+								x:solars_right,
+								y:solars_bottom,
+							})
+							solars_right+=s.solar_width;
+						}
+						solars_bottom+=s.solar_height;
+					}
+				// small_rect
+					var solars_bottom=solars_top_padding;
+					while(solars_bottom+s.solar_height<=s.small_rect.height){
+						var solars_right=s.small_rect.left+small_solars_left_padding;
+						while(solars_right+s.solar_width<=s.small_rect.right){
+							s.solars.push({
+								x:solars_right,
+								y:solars_bottom,
+							})
+							solars_right+=s.solar_width;
+						}
+						solars_bottom+=s.solar_height;
+					}
 
 			// delete overflow solars
 				for(var i=0;i<s.solars.length;i++){
@@ -804,7 +865,9 @@
 	var trape=new Trape('.main',{
 		x:636,
 		y:270,
-		d3:{x:-20,y:80},
+		// d1:{x:120,y:0},
+		// d2:{x:120,y:298},
+		// d3:{x:-220,y:298},
 	});
 	// var trape2=new Trape('.main',{x:270,y:270});
 

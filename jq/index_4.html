@@ -23,13 +23,12 @@
 		.trape_wrap{position: fixed;left: 0;top:0;width: 100%;height: 100%;pointer-events: none;}
 		.trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: all;}
 		svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
-		.dot{cursor: ew-resize;}
+		.dot{cursor: move;}
 		.trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
 		.trape_wrap.act .trape_fill{fill:rgba(255,100,0,.5);}
-		.trape_wrap.act line.top{stroke-width:3;}
-		.trape_wrap.act line.bottom{stroke-width:3;}
+		.trape_wrap.act line{stroke-width:3;}
 		.trape_wrap.act .dot{r:4;}
-		.label{    position: absolute; width: 200px; height: 50px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+		.label{    position: absolute; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 		.btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
 		.btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
 		/*.arrows{display: none;}*/
@@ -38,8 +37,10 @@
 		.arrow_down{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
 		.arrow_left{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
 		.arrow_right{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
-		line.top{cursor: ns-resize;}
-		line.bottom{cursor: ns-resize;}
+		line.top{cursor: move;}
+		line.bottom{cursor: move;}
+		line.left{cursor: move;}
+		line.right{cursor: move;}
 		.mask{position: absolute;width: 100%;height: 100%;pointer-events: all;cursor: wait;}
 		.solars{pointer-events: none;}
 	</style>
@@ -73,8 +74,11 @@
 
 <div class="main">
 	<div class="label">
-		双击添加新选区。红边为平行边。<br>
-		x:<span class="x"></span> y:<span class="y"></span>
+		双击添加新选区。<br>
+		红边为平行边。<br>
+		点和边都可拖动。<br>
+		按住ctrl键可旋转。<br>
+		<!-- x:<span class="x"></span> y:<span class="y"></span> -->
 	</div>
 </div>
 
@@ -152,6 +156,8 @@
 			s.bind_polygon();
 			s.bind_top_line();
 			s.bind_bottom_line();
+			s.bind_left_line();
+			s.bind_right_line();
 			s.bind_mask();
 			s.bind_control_key();
 			s.bind_trape();
@@ -531,6 +537,131 @@
 				}
 			})
 		},
+		bind_left_line:function(){
+			var s=this;
+
+			s.dom.find('line.left').each(function(i,elem){
+
+				elem=jq(elem);
+				var startX = 0, startY = 0, x = 0, y = 0;
+
+				var origin_d0_x=0;
+				var origin_d3_x=0;
+
+				elem.on('mousedown', function(e) {
+					e.preventDefault();
+					startX = e.pageX;
+					startY = e.pageY;
+
+					origin_d0_x=s.d0.x;
+					origin_d3_x=s.d3.x;
+
+					jq(document).on('mousemove', mousemove);
+					jq(document).on('mouseup', mouseup);
+				});
+
+				function mousemove(e) {
+
+					var mx=e.pageX-(startX);
+					var my=-(e.pageY-startY);
+
+					var a=s.radian;
+					var o=gv.tan(a)*my;
+					var p=o+mx;
+					var r=gv.cos(a)*p;
+
+					s.d0.x=origin_d0_x+r;
+					s.d3.x=origin_d3_x+r;
+
+					if(s.d1.x-s.d0.x<4){
+						s.d0.x=s.d1.x-4;
+						var distance=s.d0.x-origin_d0_x;
+						s.d3.x=origin_d3_x+distance;
+					}
+
+					if(s.d2.x-s.d3.x<4){
+						s.d3.x=s.d2.x-4;
+						var distance=s.d3.x-origin_d3_x;
+						s.d0.x=origin_d0_x+distance;
+					}
+
+					s.draw();
+				}
+
+				function mouseup() {
+
+					var drag_distance=-s.d0.x;
+					for(var i=0;i<4;i++){
+						s['d'+i].x+=drag_distance;
+					}
+
+					var a=s.radian;
+					s.x-=gv.cos(a)*drag_distance;
+					s.y+=gv.sin(a)*drag_distance;
+					s.draw();
+
+					jq(document).off('mousemove', mousemove);
+					jq(document).off('mouseup', mouseup);
+				}
+			})
+		},
+		bind_right_line:function(){
+			var s=this;
+
+			s.dom.find('line.right').each(function(i,elem){
+
+				elem=jq(elem);
+				var startX = 0, startY = 0, x = 0, y = 0;
+
+				var origin_d1_x=0;
+				var origin_d2_x=0;
+
+				elem.on('mousedown', function(e) {
+					e.preventDefault();
+					startX = e.pageX;
+					startY = e.pageY;
+
+					origin_d1_x=s.d1.x;
+					origin_d2_x=s.d2.x;
+
+					jq(document).on('mousemove', mousemove);
+					jq(document).on('mouseup', mouseup);
+				});
+
+				function mousemove(e) {
+
+					var mx=e.pageX-(startX);
+					var my=-(e.pageY-startY);
+
+					var a=s.radian;
+					var o=gv.tan(a)*my;
+					var p=o+mx;
+					var r=gv.cos(a)*p;
+
+					s.d1.x=origin_d1_x+r;
+					s.d2.x=origin_d2_x+r;
+
+					if(s.d1.x-s.d0.x<4){
+						s.d1.x=s.d0.x+4;
+						var distance=s.d1.x-origin_d1_x;
+						s.d2.x=origin_d2_x+distance;
+					}
+
+					if(s.d2.x-s.d3.x<4){
+						s.d2.x=s.d3.x+4;
+						var distance=s.d2.x-origin_d2_x;
+						s.d1.x=origin_d1_x+distance;
+					}
+
+					s.draw();
+				}
+
+				function mouseup() {
+					jq(document).off('mousemove', mousemove);
+					jq(document).off('mouseup', mouseup);
+				}
+			})
+		},
 		bind_mask:function(){
 			var s=this;
 
@@ -584,12 +715,12 @@
 		},
 		bind_trape:function(){
 			var s=this;
-			// s.dom.on('mousedown',function(){
-			// 	s.dom.find('.solars').hide();
-			// })
-			// jq(document).on('mouseup',function(){
-			// 	jq('.solars').show();
-			// })
+			s.dom.on('mousedown',function(){
+				s.dom.find('.solars').hide();
+			})
+			jq(document).on('mouseup',function(){
+				jq('.solars').show();
+			})
 		},
 		draw_solars:function(){
 			var s=this;
@@ -740,12 +871,7 @@
 				}
 
 			// count
-				var solars_total=0;
-				for(var i=0;i<Trape.prototype.trapes.length;i++){
-					var trape=Trape.prototype.trapes[i];
-					solars_total+=trape.solars.length;
-				}
-				jq('.solars_total').html(solars_total);
+				s.count_solars();
 
 			// draw
 				s.dom.find('.solar').remove();
@@ -772,6 +898,14 @@
 						s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg)');
 					}
 				}
+		},
+		count_solars:function(){
+			var solars_total=0;
+			for(var i=0;i<Trape.prototype.trapes.length;i++){
+				var trape=Trape.prototype.trapes[i];
+				solars_total+=trape.solars.length;
+			}
+			jq('.solars_total').html(solars_total);
 		},
 		mod_radian:function(radian){
 			radian=radian%(2*Math.PI);
@@ -851,6 +985,7 @@
 			var s=this;
 			s.dom.remove();
 			Trape.prototype.trapes.splice(Trape.prototype.trapes.indexOf(s),1);
+			s.count_solars();
 		},
 		set_lean:function(){
 			var s=this;

@@ -35,8 +35,9 @@
 		.option input{width:50px;}
 		.option .btn{cursor: pointer;}
 
-		.arrows{display: none;}
-		.arrow{fill: #00f8ff;}
+		.lean_arrows{display: none;}
+		.solar_lean_arrows{display: none;transform: scale(.8);}
+		.arrow{fill: gray;}
 		.arrow:hover
 		,.arrow.act
 			{fill:blue;}
@@ -71,11 +72,17 @@
 			<circle class="dot d1" r="2" ></circle>
 			<circle class="dot d2" r="2" ></circle>
 			<circle class="dot d3" r="2" ></circle>
-			<g class="arrows lean">
+			<g class="lean_arrows">
 				<path class="arrow" data-direction="up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
 				<path class="arrow" data-direction="down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
-				<path class="arrow" data-direction="left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
-				<path class="arrow" data-direction="right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<!-- <path class="arrow" data-direction="left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path> -->
+				<!-- <path class="arrow" data-direction="right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path> -->
+			</g>
+			<g class="solar_lean_arrows">
+				<path class="arrow" data-direction="up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<path class="arrow" data-direction="down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<!-- <path class="arrow" data-direction="left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path> -->
+				<!-- <path class="arrow" data-direction="right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path> -->
 			</g>
 		</g>
 	</svg>
@@ -164,16 +171,20 @@
 		s.y=option.y||300;
 		s.d0=option.d0||{x:0,y:0};
 		s.d1=option.d1||{x:100,y:0};
-		s.d2=option.d2||{x:120,y:80};
-		s.d3=option.d3||{x:-20,y:80};
+		s.d2=option.d2||{x:120,y:90};
+		s.d3=option.d3||{x:-20,y:90};
 		s.act_dot_index;
 		s.radian=0;
 		s.degree=0;
 		s.precison=6;
-		s.solar_true_width=0;
-		s.solar_true_height=0;
-		s.is_show_arrows=false;
-		s.is_show_solar_arrows=false;
+		s.solar_true_width=30;
+		s.solar_true_height=20;
+		s.is_show_lean_arrows=false;
+		s.is_show_solar_lean_arrows=false;
+		s.lean_direction='up';
+		s.lean_radian=0;
+		s.solar_lean_direction='up';
+		s.solar_lean_radian=0;
 		s.init(parent);
 	}
 
@@ -184,11 +195,9 @@
 
 			jq(parent).append(s.dom);
 
-			s.draw();
-
 			s.set_act();
-			s.set_lean_direction('up');
-			s.set_lean_angle(0);
+
+			s.draw();
 
 			s.bind_dots();
 			s.bind_polygon();
@@ -200,6 +209,7 @@
 			s.bind_rotate_key();
 			s.bind_trape();
 			s.bind_lean_arrows();
+			s.bind_solar_lean_arrows();
 		},
 		get_data:function(){
 			var s=this;
@@ -230,6 +240,11 @@
 
 			jq('.option.solar_true_width input').val(Trape.prototype.trape_act.solar_true_width);
 			jq('.option.solar_true_height input').val(Trape.prototype.trape_act.solar_true_height);
+
+			var lean_degree=(gv.radian_to_degree(Trape.prototype.trape_act.lean_radian)).toFixed(2);
+			jq('.option.lean input').val(lean_degree);
+			var solar_lean_degree=(gv.radian_to_degree(Trape.prototype.trape_act.solar_lean_radian)).toFixed(2);
+			jq('.option.solar_lean input').val(solar_lean_degree);
 		},
 		draw:function(){
 			var s=this;
@@ -237,15 +252,24 @@
 
 			s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate('+-s.radian+'rad)');
 			// s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate(60deg)');
-			if(s.is_show_arrows){
-				s.dom.find('.arrows').show();
+
+			if(s.is_show_lean_arrows){
+				s.dom.find('.lean_arrows').show();
 			}
 			else{
-				s.dom.find('.arrows').hide();
+				s.dom.find('.lean_arrows').hide();
 			}
-
-			s.dom.find('.arrows.lean .arrow').removeClass('act');
-			s.dom.find('.arrows.lean .arrow[data-direction='+s.lean_direction+']').addClass('act');
+			s.dom.find('.lean_arrows .arrow').removeClass('act');
+			s.dom.find('.lean_arrows .arrow[data-direction='+s.lean_direction+']').addClass('act');
+			
+			if(s.is_show_solar_lean_arrows){
+				s.dom.find('.solar_lean_arrows').show();
+			}
+			else{
+				s.dom.find('.solar_lean_arrows').hide();
+			}
+			s.dom.find('.solar_lean_arrows .arrow').removeClass('act');
+			s.dom.find('.solar_lean_arrows .arrow[data-direction='+s.solar_lean_direction+']').addClass('act');
 
 			s.draw_polygon();
 			s.draw_dots();
@@ -304,8 +328,18 @@
 
 				s.solars=[];
 
-				// s.solar_width=30;
-				// s.solar_height=15;
+				s.solar_width=s.solar_true_width;
+				var solar_result_lean_radian=0;
+				if(s.lean_direction==s.solar_lean_direction){
+					solar_result_lean_radian=s.lean_radian+s.solar_lean_radian;
+				}
+				else{
+					solar_result_lean_radian=s.lean_radian-s.solar_lean_radian;
+				}
+				s.solar_height=Math.round(Math.cos(solar_result_lean_radian)*s.solar_true_height);
+				if(s.solar_height==0){
+					s.solar_height=1;
+				}
 
 				s.outter_rect={};
 				s.outter_rect.left=Math.min(s.d0.x,s.d3.x);
@@ -1036,43 +1070,78 @@
 			Trape.prototype.trapes.splice(Trape.prototype.trapes.indexOf(s),1);
 			s.count_solars();
 		},
-		show_arrows:function(){
+
+
+		show_lean_arrows:function(){
 			var s=this;
-			s.is_show_arrows=true;
+			s.is_show_lean_arrows=true;
 			s.draw();
 		},
-		hide_arrows:function(){
+		hide_lean_arrows:function(){
 			var s=this;
-			s.is_show_arrows=false;
+			s.is_show_lean_arrows=false;
 			s.draw();
 		},
-		toggle_arrows:function(){
+		toggle_lean_arrows:function(){
 			var s=this;
-			if(s.is_show_arrows){
-				s.hide_arrows();
+			if(s.is_show_lean_arrows){
+				s.is_show_lean_arrows=false;
 			}
 			else{
-				s.show_arrows();
+				s.is_show_lean_arrows=true;
 			}
+			s.draw();
 		},
-		set_lean_angle:function(radian){
+		set_lean_radian:function(radian){
 			var s=this;
-			s.lean_angle=radian;
-			jq('.option.lean input').val(radian);
-		},
-		set_lean_direction:function(direction){
-			var s=this;
-			s.lean_direction=direction;
-			s.is_show_arrows=false;
+			s.lean_radian=radian;
 			s.draw();
 		},
 		bind_lean_arrows:function(){
 			var s=this;
-			s.dom.find('.arrows.lean .arrow').click(function(){
-				s.set_lean_direction(jq(this).attr('data-direction'));
+			s.dom.find('.lean_arrows .arrow').click(function(){
+				s.lean_direction=jq(this).attr('data-direction');
+				s.is_show_lean_arrows=false;
+				s.draw();
 			})
-
 		},
+
+
+		show_solar_lean_arrows:function(){
+			var s=this;
+			s.is_show_solar_lean_arrows=true;
+			s.draw();
+		},
+		hide_solar_lean_arrows:function(){
+			var s=this;
+			s.is_show_solar_lean_arrows=false;
+			s.draw();
+		},
+		toggle_solar_lean_arrows:function(){
+			var s=this;
+			if(s.is_show_solar_lean_arrows){
+				s.is_show_solar_lean_arrows=false;
+			}
+			else{
+				s.is_show_solar_lean_arrows=true;
+			}
+			s.draw();
+		},
+		set_solar_lean_radian:function(radian){
+			var s=this;
+			s.solar_lean_radian=radian;
+			s.draw();
+		},
+		bind_solar_lean_arrows:function(){
+			var s=this;
+			s.dom.find('.solar_lean_arrows .arrow').click(function(){
+				s.solar_lean_direction=jq(this).attr('data-direction');
+				s.is_show_solar_lean_arrows=false;
+				s.draw();
+			})
+		},
+
+
 		set_solar_width:function(width){
 			var s=this;
 			s.solar_true_width=parseFloat(width);
@@ -1147,8 +1216,30 @@
 		Trape.prototype.trape_act.set_solar_height(jq(this).val());
 	})
 
+	jq('.option.lean input').change(function(){
+		var degree=jq('.option.lean input').val();
+		if(degree<0||degree>=90){
+			alert('角度需大于等于0度、小于90度');
+			return;
+		}
+		Trape.prototype.trape_act.set_lean_radian(gv.degree_to_radian(degree));
+	})
+
 	jq('.option.lean .btn').click(function(){
-		Trape.prototype.trape_act.toggle_arrows();
+		Trape.prototype.trape_act.toggle_lean_arrows();
+	})
+
+	jq('.option.solar_lean input').change(function(){
+		var degree=jq('.option.solar_lean input').val();
+		if(degree<0||degree>=90){
+			alert('角度需大于等于0度、小于90度');
+			return;
+		}
+		Trape.prototype.trape_act.set_solar_lean_radian(gv.degree_to_radian(degree));
+	})
+
+	jq('.option.solar_lean .btn').click(function(){
+		Trape.prototype.trape_act.toggle_solar_lean_arrows();
 	})
 
 </script>

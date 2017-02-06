@@ -3,18 +3,39 @@ html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relati
 .main{width: 1200px;height: 800px;}
 .main{position: fixed;background: url(../bg.jpg) no-repeat;background-size:100% 100%;}
 
-
 .barri_wrap{position: fixed;left: 0;top:0;background: url(../img/barri.jpg);cursor:pointer;}
-
+.barri_wrap .handle{position: absolute;right: 0;bottom: 0;width: 7px;height: 7px;background:gray;border:solid 1px blue;cursor:move;}
+.barri_wrap .handle:hover{background: blue;}
 
 .trape_wrap{position: fixed;left: 0;top:0;width: 100%;height: 100%;pointer-events: none;}
-.trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: all;}
-svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
-.dot{cursor: move;}
-.trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
+.trape_wrap .trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: all;}
+.trape_wrap svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
+.trape_wrap .dot{cursor: move;}
+.trape_wrap .trape .trape_fill{pointer-events: all;fill:rgba(190,110,70,.5);}
 .trape_wrap.act .trape_fill{fill:rgba(255,100,0,.5);}
 .trape_wrap.act line{stroke-width:3;}
 .trape_wrap.act .dot{r:4;}
+.trape_wrap .lean_arrows{display: none;}
+.trape_wrap .solar_lean_arrows{display: none;transform: scale(.8);}
+.trape_wrap .arrow{fill: gray;}
+.trape_wrap .arrow:hover
+,.trape_wrap .arrow.act
+	{fill:blue;}
+.trape_wrap .arrow[data-direction=up]{ transform: translate(-32px,-70px) scale(.06); }
+.trape_wrap .arrow[data-direction=down]{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
+.trape_wrap .arrow[data-direction=left]{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
+.trape_wrap .arrow[data-direction=right]{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
+.trape_wrap line.top{cursor: move;}
+.trape_wrap line.bottom{cursor: move;}
+.trape_wrap line.left{cursor: move;}
+.trape_wrap line.right{cursor: move;}
+.trape_wrap .dot:hover
+,.trape_wrap line:hover
+	{fill:blue;stroke:blue;}
+.trape_wrap .mask{position: fixed;width: 100%;height: 100%;pointer-events: all;cursor: url(../img/cursor_rotate_lr.png) 16 16,ew-resize;}
+.trape_wrap .solars{pointer-events: none;}
+
+
 .label{    position: fixed; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 
 .options{position: fixed; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
@@ -22,24 +43,5 @@ svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cur
 .option input{width:50px;}
 .option .btn{cursor: pointer;}
 
-.lean_arrows{display: none;}
-.solar_lean_arrows{display: none;transform: scale(.8);}
-.arrow{fill: gray;}
-.arrow:hover
-,.arrow.act
-	{fill:blue;}
-.arrow[data-direction=up]{ transform: translate(-32px,-70px) scale(.06); }
-.arrow[data-direction=down]{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
-.arrow[data-direction=left]{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
-.arrow[data-direction=right]{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
-line.top{cursor: move;}
-line.bottom{cursor: move;}
-line.left{cursor: move;}
-line.right{cursor: move;}
-.dot:hover
-,line:hover
-	{fill:blue;stroke:blue;}
-.mask{position: fixed;width: 100%;height: 100%;pointer-events: all;cursor: url(../img/cursor_rotate_lr.png) 16 16,ew-resize;}
-.solars{pointer-events: none;}
 
 

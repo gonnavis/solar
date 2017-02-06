@@ -8,13 +8,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-	<script type="text/javascript" src="/test/lib/jquery-2.1.4.js"></script>
+	<script type="text/javascript" src="/test/lib/jQuery/jquery-3.1.1.min.js"></script>
 	<script type="text/javascript">
 		var jq=jQuery.noConflict();
 	</script>
 
-	<!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css"> -->
-	<link rel="stylesheet" type="text/css" href="../lib/font_j56o52g1hhq6w29.css">
+	<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_j56o52g1hhq6w29.css">
+	<!-- <link rel="stylesheet" type="text/css" href="../lib/font_j56o52g1hhq6w29.css"> -->
 	<style type="text/css">
 
 		html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relative;}
@@ -28,20 +28,30 @@
 		.trape_wrap.act .trape_fill{fill:rgba(255,100,0,.5);}
 		.trape_wrap.act line{stroke-width:3;}
 		.trape_wrap.act .dot{r:4;}
-		.label{    position: absolute; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
-		.btns{position: absolute; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
-		.btn{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;cursor: pointer;pointer-events: all;vertical-align: middle;}
-		/*.arrows{display: none;}*/
-		.arrow{fill: red;display: none;}
-		.arrow_up{ transform: translate(-32px,-70px) scale(.06); }
-		.arrow_down{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
-		.arrow_left{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
-		.arrow_right{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
+		.label{    position: fixed; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+
+		.options{position: fixed; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
+		.option{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;pointer-events: all;vertical-align: middle;}
+		.option input{width:50px;}
+		.option .btn{cursor: pointer;}
+
+		.arrows{display: none;}
+		.arrow{fill: #00f8ff;}
+		.arrow:hover
+		,.arrow.act
+			{fill:blue;}
+		.arrow[data-direction=up]{ transform: translate(-32px,-70px) scale(.06); }
+		.arrow[data-direction=down]{ transform: rotate(180deg) translate(-32px,-70px) scale(.06); }
+		.arrow[data-direction=left]{ transform: rotate(-90deg) translate(-32px,-70px) scale(.06); }
+		.arrow[data-direction=right]{ transform: rotate(90deg) translate(-32px,-70px) scale(.06); }
 		line.top{cursor: move;}
 		line.bottom{cursor: move;}
 		line.left{cursor: move;}
 		line.right{cursor: move;}
-		.mask{position: absolute;width: 100%;height: 100%;pointer-events: all;cursor: url(img/cursor_rotate_lr.png) 16 16,ew-resize;}
+		.dot:hover
+		,line:hover
+			{fill:blue;stroke:blue;}
+		.mask{position: fixed;width: 100%;height: 100%;pointer-events: all;cursor: url(img/cursor_rotate_lr.png) 16 16,ew-resize;}
 		.solars{pointer-events: none;}
 	</style>
 
@@ -61,11 +71,11 @@
 			<circle class="dot d1" r="2" ></circle>
 			<circle class="dot d2" r="2" ></circle>
 			<circle class="dot d3" r="2" ></circle>
-			<g class="arrows">
-				<path class="arrow arrow_up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
-				<path class="arrow arrow_down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
-				<path class="arrow arrow_left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
-				<path class="arrow arrow_right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+			<g class="arrows lean">
+				<path class="arrow" data-direction="up" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<path class="arrow" data-direction="down" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<path class="arrow" data-direction="left" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
+				<path class="arrow" data-direction="right" d="M416.977 392.484l-111.645 39.508c-32.233 11.407-44.238-3.146-25.347-33.026l206.043-325.89c18.663-29.518 49.519-29.879 68.408 0l206.043 325.89c18.663 29.519 7.542 44.664-25.347 33.025l-111.645-39.508-83.511 524.074c-10.906 68.435-28.568 68.536-39.49 0l-83.511-524.075z"></path>
 			</g>
 		</g>
 	</svg>
@@ -82,13 +92,30 @@
 	</div>
 </div>
 
-<div class="btns">
-	<!-- <div class="btn calc_solars">计算太阳能板数量</div> -->
-	<div class="btn ">太阳能板总数： <span class="solars_total"></span></div>
-	<div class="btn rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
-	<div class="btn rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
-	<div class="btn delete" >删除</div>
-	<div class="btn set_lean" style="display: none;">设置倾斜方向</div>
+<div class="options">
+	<!-- <div class="option calc_solars">计算太阳能板数量</div> -->
+	<div class="option ">太阳能板总数： <span class="solars_total"></span></div>
+	<div class="option rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
+	<div class="option rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
+	<div class="option delete" >删除</div>
+	<div class="option solar_true_width">
+		太阳能板宽度
+		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+	</div>
+	<div class="option solar_true_height">
+		太阳能板高度
+		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+	</div>
+	<div class="option solar_lean">
+		太阳能板角度
+		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
+		<button class="btn">方向</button>
+	</div>
+	<div class="option lean">
+		屋顶角度
+		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
+		<button class="btn">方向</button>
+	</div>
 </div>
 
 
@@ -98,7 +125,12 @@
 
 	var gv={};
 	gv.radian_to_degree=function(radian){
-		return radian*180/Math.PI;
+		var degree=radian*180/Math.PI;
+		return degree;
+	}
+	gv.degree_to_radian=function(degree){
+		var radian=Math.PI*degree/180;
+		return radian;
 	}
 	gv.get_distance=function(a,b){
 		b=b||{x:0,y:0};
@@ -138,6 +170,10 @@
 		s.radian=0;
 		s.degree=0;
 		s.precison=6;
+		s.solar_true_width=0;
+		s.solar_true_height=0;
+		s.is_show_arrows=false;
+		s.is_show_solar_arrows=false;
 		s.init(parent);
 	}
 
@@ -151,6 +187,8 @@
 			s.draw();
 
 			s.set_act();
+			s.set_lean_direction('up');
+			s.set_lean_angle(0);
 
 			s.bind_dots();
 			s.bind_polygon();
@@ -161,6 +199,7 @@
 			s.bind_mask();
 			s.bind_rotate_key();
 			s.bind_trape();
+			s.bind_lean_arrows();
 		},
 		get_data:function(){
 			var s=this;
@@ -180,11 +219,34 @@
 				s['d'+i].wy=s.y+s['d'+i].ly;
 			}
 		},
+		set_act:function(){
+			var s=this;
+			for(var i=0;i<Trape.prototype.trapes.length;i++){
+				var trape=Trape.prototype.trapes[i];
+				trape.dom.removeClass('act');
+			}
+			Trape.prototype.trape_act=s;
+			s.dom.addClass('act');
+
+			jq('.option.solar_true_width input').val(Trape.prototype.trape_act.solar_true_width);
+			jq('.option.solar_true_height input').val(Trape.prototype.trape_act.solar_true_height);
+		},
 		draw:function(){
 			var s=this;
 			s.get_data();
+
 			s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate('+-s.radian+'rad)');
 			// s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate(60deg)');
+			if(s.is_show_arrows){
+				s.dom.find('.arrows').show();
+			}
+			else{
+				s.dom.find('.arrows').hide();
+			}
+
+			s.dom.find('.arrows.lean .arrow').removeClass('act');
+			s.dom.find('.arrows.lean .arrow[data-direction='+s.lean_direction+']').addClass('act');
+
 			s.draw_polygon();
 			s.draw_dots();
 			s.draw_solars();
@@ -232,6 +294,191 @@
 			s.dom.find('.dot').eq(2).attr('cy',s.d2.y)
 			s.dom.find('.dot').eq(3).attr('cx',s.d3.x)
 			s.dom.find('.dot').eq(3).attr('cy',s.d3.y)
+		},
+		draw_solars:function(){
+			var s=this;
+
+			// init
+
+				var s=s;
+
+				s.solars=[];
+
+				// s.solar_width=30;
+				// s.solar_height=15;
+
+				s.outter_rect={};
+				s.outter_rect.left=Math.min(s.d0.x,s.d3.x);
+				s.outter_rect.right=Math.max(s.d1.x,s.d2.x);
+				s.outter_rect.width=s.outter_rect.right-s.outter_rect.left;
+				s.outter_rect.height=s.d3.y;
+
+			// add all solars
+
+				var solars_top_padding;
+				var solars_left_padding;
+
+				if(s.trape_bottom_width>=s.trape_top_width){
+					solars_top_padding=s.height%s.solar_height;
+				}
+				else{
+					solars_top_padding=0;
+				}
+
+				if(Math.abs(s.d0.x-s.d3.x) <= Math.abs(s.d1.x-s.d2.x) ){
+
+					s.small_rect={};
+					s.small_rect.left=Math.min(s.d0.x,s.d3.x);
+					s.small_rect.right=Math.max(s.d0.x,s.d3.x);
+					s.small_rect.width=s.small_rect.right-s.small_rect.left;
+					s.small_rect.height=s.d3.y;
+
+					s.big_rect={};
+					s.big_rect.left=Math.max(s.d0.x,s.d3.x);
+					s.big_rect.right=Math.max(s.d1.x,s.d2.x);
+					s.big_rect.width=s.big_rect.right-s.big_rect.left;
+					s.big_rect.height=s.d3.y;
+
+					big_solars_left_padding=0;
+					small_solars_left_padding=s.small_rect.width%s.solar_width;
+				}
+				else{
+
+					s.small_rect={};
+					s.small_rect.left=Math.min(s.d1.x,s.d2.x);
+					s.small_rect.right=Math.max(s.d1.x,s.d2.x);
+					s.small_rect.width=s.small_rect.right-s.small_rect.left;
+					s.small_rect.height=s.d3.y;
+
+					s.big_rect={};
+					s.big_rect.left=Math.min(s.d0.x,s.d3.x);
+					s.big_rect.right=Math.min(s.d1.x,s.d2.x);
+					s.big_rect.width=s.big_rect.right-s.big_rect.left;
+					s.big_rect.height=s.d3.y;
+
+					big_solars_left_padding=s.big_rect.width%s.solar_width;
+					small_solars_left_padding=0;
+				}
+
+				// big_rect
+					var solars_bottom=solars_top_padding;
+					while(solars_bottom+s.solar_height<=s.big_rect.height){
+						var solars_right=s.big_rect.left+big_solars_left_padding;
+						while(solars_right+s.solar_width<=s.big_rect.right){
+							s.solars.push({
+								x:solars_right,
+								y:solars_bottom,
+							})
+							solars_right+=s.solar_width;
+						}
+						solars_bottom+=s.solar_height;
+					}
+				// small_rect
+					var solars_bottom=solars_top_padding;
+					while(solars_bottom+s.solar_height<=s.small_rect.height){
+						var solars_right=s.small_rect.left+small_solars_left_padding;
+						while(solars_right+s.solar_width<=s.small_rect.right){
+							s.solars.push({
+								x:solars_right,
+								y:solars_bottom,
+							})
+							solars_right+=s.solar_width;
+						}
+						solars_bottom+=s.solar_height;
+					}
+
+			// delete overflow solars
+				for(var i=0;i<s.solars.length;i++){
+					var solar=s.solars[i];
+
+					// debugger;
+					var left_most;
+					if(s.d0.x>=s.d3.x){
+						var x=s.d0.x-s.d3.x;
+						var x1=x*solar.y/s.height;
+						left_most=-x1;
+						if(solar.x<left_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+					else{
+						var x=s.d3.x-s.d0.x;
+						var x1=x*(solar.y+s.solar_height)/s.height;
+						left_most=x1;
+						if(solar.x<left_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+
+					var right_most;
+					if(s.d2.x>=s.d1.x){
+						var x=s.d2.x-s.d1.x;
+						var x1=x*solar.y/s.height;
+						right_most=s.d1.x+x1;
+						if(solar.x+s.solar_width>right_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+					else{
+						var x=s.d1.x-s.d2.x;
+						var x1=x*(solar.y+s.solar_height)/s.height;
+						right_most=s.d1.x-x1;
+						if(solar.x+s.solar_width>right_most){
+							solar.is_delete=true;
+							continue;
+						}
+					}
+				}
+				for(var i=0;i<s.solars.length;){
+					var solar=s.solars[i];
+
+					if(solar.is_delete){
+						s.solars.splice(i,1);
+					}
+					else{
+						i++;
+					}
+				}
+
+			// count
+				s.count_solars();
+
+			// draw
+				s.dom.find('.solar').remove();
+				for(var i=0;i<s.solars.length;i++){
+					var solar=s.solars[i];
+
+					var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'polygon'); //Create a path in SVG's namespace
+					newElement.setAttribute("class",'solar');
+					newElement.setAttribute("points",
+								solar.x+','+solar.y
+								+' '+(solar.x+s.solar_width)+','+solar.y
+								+' '+(solar.x+s.solar_width)+','+(solar.y+s.solar_height)
+								+' '+solar.x+','+(solar.y+s.solar_height)
+							); //Set path's data
+					newElement.style.fill = "rgba(0,0,0,.5)"; //Set stroke colour
+					newElement.style.stroke = "black"; //Set stroke colour
+					newElement.style.strokeWidth = "1"; //Set stroke colour
+
+					s.dom.find('svg g.solars')[0].appendChild(newElement);
+					if(s.is_flip){
+						s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg) scaleY(-1)');
+					}
+					else{
+						s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg)');
+					}
+				}
+		},
+		count_solars:function(){
+			var solars_total=0;
+			for(var i=0;i<Trape.prototype.trapes.length;i++){
+				var trape=Trape.prototype.trapes[i];
+				solars_total+=trape.solars.length;
+			}
+			jq('.solars_total').html(solars_total);
 		},
 		bind_dots:function(){
 			var s=this;
@@ -722,191 +969,6 @@
 				jq('.solars').show();
 			})
 		},
-		draw_solars:function(){
-			var s=this;
-
-			// init
-
-				var s=s;
-
-				s.solars=[];
-
-				s.solar_width=30;
-				s.solar_height=15;
-
-				s.outter_rect={};
-				s.outter_rect.left=Math.min(s.d0.x,s.d3.x);
-				s.outter_rect.right=Math.max(s.d1.x,s.d2.x);
-				s.outter_rect.width=s.outter_rect.right-s.outter_rect.left;
-				s.outter_rect.height=s.d3.y;
-
-			// add all solars
-
-				var solars_top_padding;
-				var solars_left_padding;
-
-				if(s.trape_bottom_width>=s.trape_top_width){
-					solars_top_padding=s.height%s.solar_height;
-				}
-				else{
-					solars_top_padding=0;
-				}
-
-				if(Math.abs(s.d0.x-s.d3.x) <= Math.abs(s.d1.x-s.d2.x) ){
-
-					s.small_rect={};
-					s.small_rect.left=Math.min(s.d0.x,s.d3.x);
-					s.small_rect.right=Math.max(s.d0.x,s.d3.x);
-					s.small_rect.width=s.small_rect.right-s.small_rect.left;
-					s.small_rect.height=s.d3.y;
-
-					s.big_rect={};
-					s.big_rect.left=Math.max(s.d0.x,s.d3.x);
-					s.big_rect.right=Math.max(s.d1.x,s.d2.x);
-					s.big_rect.width=s.big_rect.right-s.big_rect.left;
-					s.big_rect.height=s.d3.y;
-
-					big_solars_left_padding=0;
-					small_solars_left_padding=s.small_rect.width%s.solar_width;
-				}
-				else{
-
-					s.small_rect={};
-					s.small_rect.left=Math.min(s.d1.x,s.d2.x);
-					s.small_rect.right=Math.max(s.d1.x,s.d2.x);
-					s.small_rect.width=s.small_rect.right-s.small_rect.left;
-					s.small_rect.height=s.d3.y;
-
-					s.big_rect={};
-					s.big_rect.left=Math.min(s.d0.x,s.d3.x);
-					s.big_rect.right=Math.min(s.d1.x,s.d2.x);
-					s.big_rect.width=s.big_rect.right-s.big_rect.left;
-					s.big_rect.height=s.d3.y;
-
-					big_solars_left_padding=s.big_rect.width%s.solar_width;
-					small_solars_left_padding=0;
-				}
-
-				// big_rect
-					var solars_bottom=solars_top_padding;
-					while(solars_bottom+s.solar_height<=s.big_rect.height){
-						var solars_right=s.big_rect.left+big_solars_left_padding;
-						while(solars_right+s.solar_width<=s.big_rect.right){
-							s.solars.push({
-								x:solars_right,
-								y:solars_bottom,
-							})
-							solars_right+=s.solar_width;
-						}
-						solars_bottom+=s.solar_height;
-					}
-				// small_rect
-					var solars_bottom=solars_top_padding;
-					while(solars_bottom+s.solar_height<=s.small_rect.height){
-						var solars_right=s.small_rect.left+small_solars_left_padding;
-						while(solars_right+s.solar_width<=s.small_rect.right){
-							s.solars.push({
-								x:solars_right,
-								y:solars_bottom,
-							})
-							solars_right+=s.solar_width;
-						}
-						solars_bottom+=s.solar_height;
-					}
-
-			// delete overflow solars
-				for(var i=0;i<s.solars.length;i++){
-					var solar=s.solars[i];
-
-					// debugger;
-					var left_most;
-					if(s.d0.x>=s.d3.x){
-						var x=s.d0.x-s.d3.x;
-						var x1=x*solar.y/s.height;
-						left_most=-x1;
-						if(solar.x<left_most){
-							solar.is_delete=true;
-							continue;
-						}
-					}
-					else{
-						var x=s.d3.x-s.d0.x;
-						var x1=x*(solar.y+s.solar_height)/s.height;
-						left_most=x1;
-						if(solar.x<left_most){
-							solar.is_delete=true;
-							continue;
-						}
-					}
-
-					var right_most;
-					if(s.d2.x>=s.d1.x){
-						var x=s.d2.x-s.d1.x;
-						var x1=x*solar.y/s.height;
-						right_most=s.d1.x+x1;
-						if(solar.x+s.solar_width>right_most){
-							solar.is_delete=true;
-							continue;
-						}
-					}
-					else{
-						var x=s.d1.x-s.d2.x;
-						var x1=x*(solar.y+s.solar_height)/s.height;
-						right_most=s.d1.x-x1;
-						if(solar.x+s.solar_width>right_most){
-							solar.is_delete=true;
-							continue;
-						}
-					}
-				}
-				for(var i=0;i<s.solars.length;){
-					var solar=s.solars[i];
-
-					if(solar.is_delete){
-						s.solars.splice(i,1);
-					}
-					else{
-						i++;
-					}
-				}
-
-			// count
-				s.count_solars();
-
-			// draw
-				s.dom.find('.solar').remove();
-				for(var i=0;i<s.solars.length;i++){
-					var solar=s.solars[i];
-
-					var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'polygon'); //Create a path in SVG's namespace
-					newElement.setAttribute("class",'solar');
-					newElement.setAttribute("points",
-								solar.x+','+solar.y
-								+' '+(solar.x+s.solar_width)+','+solar.y
-								+' '+(solar.x+s.solar_width)+','+(solar.y+s.solar_height)
-								+' '+solar.x+','+(solar.y+s.solar_height)
-							); //Set path's data
-					newElement.style.fill = "rgba(0,0,0,.5)"; //Set stroke colour
-					newElement.style.stroke = "black"; //Set stroke colour
-					newElement.style.strokeWidth = "1"; //Set stroke colour
-
-					s.dom.find('svg g.solars')[0].appendChild(newElement);
-					if(s.is_flip){
-						s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg) scaleY(-1)');
-					}
-					else{
-						s.dom.find('svg g.rotater').css('transform','rotate('+-s.degree+'deg)');
-					}
-				}
-		},
-		count_solars:function(){
-			var solars_total=0;
-			for(var i=0;i<Trape.prototype.trapes.length;i++){
-				var trape=Trape.prototype.trapes[i];
-				solars_total+=trape.solars.length;
-			}
-			jq('.solars_total').html(solars_total);
-		},
 		mod_radian:function(radian){
 			radian=radian%(2*Math.PI);
 			if(radian<0){
@@ -968,28 +1030,58 @@
 
 			s.draw();
 		},
-		refresh_data:function(){
-			// var s=this;
-			// s.degree=s.get_dot_radian(s.d1);
-		},
-		set_act:function(){
-			var s=this;
-			for(var i=0;i<Trape.prototype.trapes.length;i++){
-				var trape=Trape.prototype.trapes[i];
-				trape.dom.removeClass('act');
-			}
-			Trape.prototype.trape_act=s;
-			s.dom.addClass('act');
-		},
 		delete:function(){
 			var s=this;
 			s.dom.remove();
 			Trape.prototype.trapes.splice(Trape.prototype.trapes.indexOf(s),1);
 			s.count_solars();
 		},
-		set_lean:function(){
+		show_arrows:function(){
 			var s=this;
-			s.dom.find('.arrows').removeAttr('display');
+			s.is_show_arrows=true;
+			s.draw();
+		},
+		hide_arrows:function(){
+			var s=this;
+			s.is_show_arrows=false;
+			s.draw();
+		},
+		toggle_arrows:function(){
+			var s=this;
+			if(s.is_show_arrows){
+				s.hide_arrows();
+			}
+			else{
+				s.show_arrows();
+			}
+		},
+		set_lean_angle:function(radian){
+			var s=this;
+			s.lean_angle=radian;
+			jq('.option.lean input').val(radian);
+		},
+		set_lean_direction:function(direction){
+			var s=this;
+			s.lean_direction=direction;
+			s.is_show_arrows=false;
+			s.draw();
+		},
+		bind_lean_arrows:function(){
+			var s=this;
+			s.dom.find('.arrows.lean .arrow').click(function(){
+				s.set_lean_direction(jq(this).attr('data-direction'));
+			})
+
+		},
+		set_solar_width:function(width){
+			var s=this;
+			s.solar_true_width=parseFloat(width);
+			s.draw_solars();
+		},
+		set_solar_height:function(height){
+			var s=this;
+			s.solar_true_height=parseFloat(height);
+			s.draw_solars();
 		},
 	}
 
@@ -998,8 +1090,8 @@
 
 <script type="text/javascript">
 	var trape=new Trape('.main',{
-		x:636,
-		y:270,
+		x:260,
+		y:200,
 		// d1:{x:120,y:0},
 		// d2:{x:120,y:298},
 		// d3:{x:-220,y:298},
@@ -1011,7 +1103,7 @@
 	// trape2.draw();
 	// trape2.draw_solars();
 
-	jq('.btns').dblclick(function(e){
+	jq('.options').dblclick(function(e){
 		e.stopPropagation();
 	})
 
@@ -1026,30 +1118,39 @@
 		// console.log(trape.radian.toFixed(3)+' '+trape.degree.toFixed(0));
 	})
 
-	jq('.calc_solars').click(function(){
+	jq('.option.calc_solars').click(function(){
 		for(var i=0;i<Trape.prototype.trapes.length;i++){
 			var trape=Trape.prototype.trapes[i];
 			trape.draw_solars();
 		}
 	})
 
-	jq('.rotate_left').click(function(){
+	jq('.option.rotate_left').click(function(){
 		Trape.prototype.trape_act.rotate(Math.PI/2);
 		Trape.prototype.trape_act.draw();
 	})
 
-	jq('.rotate_right').click(function(){
+	jq('.option.rotate_right').click(function(){
 		Trape.prototype.trape_act.rotate(-Math.PI/2);
 		Trape.prototype.trape_act.draw();
 	})
 
-	jq('.delete').click(function(){
+	jq('.option.delete').click(function(){
 		Trape.prototype.trape_act.delete();
 	})
 
-	jq('.set_lean').click(function(){
-		Trape.prototype.trape_act.set_lean();
+	jq('.option.solar_true_width input').change(function(){
+		Trape.prototype.trape_act.set_solar_width(jq(this).val());
 	})
+
+	jq('.option.solar_true_height input').change(function(){
+		Trape.prototype.trape_act.set_solar_height(jq(this).val());
+	})
+
+	jq('.option.lean .btn').click(function(){
+		Trape.prototype.trape_act.toggle_arrows();
+	})
+
 </script>
 
 </body>

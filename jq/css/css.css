@@ -3,11 +3,14 @@ html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relati
 .main{width: 1200px;height: 800px;}
 .main{position: fixed;background: url(../bg.jpg) no-repeat;background-size:100% 100%;}
 
-.barri_wrap{position: fixed;left: 0;top:0;background: url(../img/barri.jpg);cursor:pointer;}
+.barri_wrap{position: fixed;left: 0;top:0;opacity: .5;z-index: 2;}
+.barri_wrap.act{opacity: 1;z-index: 3;}
+.barri_wrap .barri{position: absolute;left: 0;top:0;width:100%;height:100%;background: url(../img/barri.jpg);cursor:pointer;}
 .barri_wrap .handle{position: absolute;right: 0;bottom: 0;width: 7px;height: 7px;background:gray;border:solid 1px blue;cursor:move;}
 .barri_wrap .handle:hover{background: blue;}
 
-.trape_wrap{position: fixed;left: 0;top:0;width: 100%;height: 100%;pointer-events: none;}
+.trape_wrap{position: fixed;left: 0;top:0;width: 100%;height: 100%;pointer-events: none;z-index: 1;}
+.trape_wrap.act{z-index: 3;}
 .trape_wrap .trape{position: absolute;top:0;left: 0;overflow: visible;width: 0;height: 0;pointer-events: all;}
 .trape_wrap svg{overflow: visible;position: fixed;left: 0;top:0;width: 100%;height: 100%;cursor: pointer;}
 .trape_wrap .dot{cursor: move;}

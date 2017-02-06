@@ -5,9 +5,10 @@ var trape=new Trape('.main',{
 	// d2:{x:120,y:298},
 	// d3:{x:-220,y:298},
 });
+set_trape_act(trape.dom);
 // var trape2=new Trape('.main',{x:270,y:270});
 
-trape.set_act();
+// trape.set_act();
 // trape2.rotate(Math.PI/2);
 // trape2.draw();
 // trape2.draw_solars();
@@ -17,10 +18,13 @@ jq('.options').dblclick(function(e){
 })
 
 jq('.main').dblclick(function(e){
-	new Trape('.main',{
-		x:e.pageX,
-		y:e.pageY,
-	})
+	if(!e.altKey){
+		var trape=new Trape('.main',{
+			x:e.pageX,
+			y:e.pageY,
+		})
+		set_trape_act(trape.dom);
+	}
 })
 
 jq(document).mousemove(function(){
@@ -35,25 +39,25 @@ jq('.option.calc_solars').click(function(){
 })
 
 jq('.option.rotate_left').click(function(){
-	Trape.prototype.trape_act.rotate(Math.PI/2);
-	Trape.prototype.trape_act.draw();
+	act.rotate(Math.PI/2);
+	act.draw();
 })
 
 jq('.option.rotate_right').click(function(){
-	Trape.prototype.trape_act.rotate(-Math.PI/2);
-	Trape.prototype.trape_act.draw();
+	act.rotate(-Math.PI/2);
+	act.draw();
 })
 
 jq('.option.delete').click(function(){
-	Trape.prototype.trape_act.delete();
+	act.delete();
 })
 
 jq('.option.solar_true_width input').change(function(){
-	Trape.prototype.trape_act.set_solar_width(jq(this).val());
+	act.set_solar_width(jq(this).val());
 })
 
 jq('.option.solar_true_height input').change(function(){
-	Trape.prototype.trape_act.set_solar_height(jq(this).val());
+	act.set_solar_height(jq(this).val());
 })
 
 jq('.option.lean input').change(function(){
@@ -62,11 +66,11 @@ jq('.option.lean input').change(function(){
 		alert('角度需大于等于0度、小于90度');
 		return;
 	}
-	Trape.prototype.trape_act.set_lean_radian(gv.degree_to_radian(degree));
+	act.set_lean_radian(gv.degree_to_radian(degree));
 })
 
 jq('.option.lean .btn').click(function(){
-	Trape.prototype.trape_act.toggle_lean_arrows();
+	act.toggle_lean_arrows();
 })
 
 jq('.option.solar_lean input').change(function(){
@@ -75,9 +79,9 @@ jq('.option.solar_lean input').change(function(){
 		alert('角度需大于等于0度、小于90度');
 		return;
 	}
-	Trape.prototype.trape_act.set_solar_lean_radian(gv.degree_to_radian(degree));
+	act.set_solar_lean_radian(gv.degree_to_radian(degree));
 })
 
 jq('.option.solar_lean .btn').click(function(){
-	Trape.prototype.trape_act.toggle_solar_lean_arrows();
+	act.toggle_solar_lean_arrows();
 })

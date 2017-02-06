@@ -5,6 +5,7 @@ function Trape(parent,option){
 	Trape.prototype.trapes.push(s);
 	var option=option||{};
 	s.dom=jq('.proto.trape_wrap').clone().removeClass('proto').show();
+	s.dom.attr('data-index',Trape.prototype.trapes.length-1);
 	s.x=option.x||300;
 	s.y=option.y||300;
 	s.d0=option.d0||{x:0,y:0};
@@ -32,8 +33,6 @@ Trape.prototype={
 		var s=this;
 
 		jq(parent).append(s.dom);
-
-		s.set_act();
 
 		s.draw();
 
@@ -66,23 +65,6 @@ Trape.prototype={
 			s['d'+i].wx=s.x+s['d'+i].lx;
 			s['d'+i].wy=s.y+s['d'+i].ly;
 		}
-	},
-	set_act:function(){
-		var s=this;
-		for(var i=0;i<Trape.prototype.trapes.length;i++){
-			var trape=Trape.prototype.trapes[i];
-			trape.dom.removeClass('act');
-		}
-		Trape.prototype.trape_act=s;
-		s.dom.addClass('act');
-
-		jq('.option.solar_true_width input').val(Trape.prototype.trape_act.solar_true_width);
-		jq('.option.solar_true_height input').val(Trape.prototype.trape_act.solar_true_height);
-
-		var lean_degree=(gv.radian_to_degree(Trape.prototype.trape_act.lean_radian)).toFixed(2);
-		jq('.option.lean input').val(lean_degree);
-		var solar_lean_degree=(gv.radian_to_degree(Trape.prototype.trape_act.solar_lean_radian)).toFixed(2);
-		jq('.option.solar_lean input').val(solar_lean_degree);
 	},
 	draw:function(){
 		var s=this;
@@ -389,7 +371,6 @@ Trape.prototype={
 				jq(document).on('mousemove', mousemove);
 				jq(document).on('mouseup', mouseup);
 				// s.dom.find('.solars').hide();
-				s.set_act();
 			});
 
 			function mousemove(e) {
@@ -529,7 +510,6 @@ Trape.prototype={
 				jq(document).on('mousemove', mousemove);
 				jq(document).on('mouseup', mouseup);
 				// s.dom.find('.solars').hide();
-				s.set_act();
 			});
 
 			function mousemove(e) {
@@ -818,7 +798,7 @@ Trape.prototype={
 		var s=this;
 
 		jq(document).on('keydown',function(e){
-			if(e.keyCode==16||e.keyCode==17/*shift or ctrl*/){
+			if(e.keyCode==16||e.keyCode==17/*shift*/){
 				Trape.prototype.trape_act.dom.find('.mask').show();
 			}
 		})

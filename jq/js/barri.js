@@ -33,7 +33,7 @@ Barri.prototype={
 	},
 	bind_barri:function(){
 		var s=this;
-		var elem=s.dom;
+		var elem=s.dom.find('.barri');
 		var startX = 0, startY = 0, x = 0, y = 0;
 
 		var origin_x=0;
@@ -79,7 +79,6 @@ Barri.prototype={
 
 		elem.on('mousedown', function(e) {
 			e.preventDefault();
-			e.stopPropagation();
 			startX = e.pageX;
 			startY = e.pageY;
 
@@ -91,7 +90,6 @@ Barri.prototype={
 		});
 
 		function mousemove(e) {
-			e.stopPropagation();
 
 
 			var mx=e.pageX-startX;
@@ -111,7 +109,6 @@ Barri.prototype={
 		}
 
 		function mouseup(e) {
-			e.stopPropagation();
 			jq(document).off('mousemove', mousemove);
 			jq(document).off('mouseup', mouseup);
 		}

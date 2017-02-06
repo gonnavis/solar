@@ -325,6 +325,34 @@ Trape.prototype={
 				}
 			}
 	},
+	get_solars_globle_position:function(){
+		var s=this;
+		for(var i=0;i<s.solars.length;i++){
+			var solar=s.solars[i];
+
+			solar.d0={
+				x:solar.x,
+				y:solar.y,
+			}
+			solar.d1={
+				x:solar.x+s.solar_width,
+				y:solar.y,
+			}
+			solar.d2={
+				x:solar.x+s.solar_width,
+				y:solar.y+s.solar_height,
+			}
+			solar.d3={
+				x:solar.x,
+				y:solar.y+s.solar_height,
+			}
+
+			solar.local={};
+			for(var j=0;j<4;j++){
+				solar.local['d'+j]=s.rotate_dot(solar['d'+j],s.radian);
+			}
+		}
+	},
 	// count_solars:function(){
 	// 	var solars_total=0;
 	// 	for(var i=0;i<Trape.prototype.trapes.length;i++){
@@ -864,14 +892,29 @@ Trape.prototype={
 		dot.x=adjacent+origin.x;
 		dot.y=-opposite+origin.y;
 	},
+	// rotate_dot:function(dot,radian,origin){
+	// 	/* params
+	// 		origin: point
+	// 	*/
+	// 	var s=this;
+	// 	origin=origin||{x:0,y:0};
+	// 	var new_radian=s.get_dot_radian(dot,origin)+radian;
+	// 	s.set_dot_radian(dot,new_radian,origin);
+	// },
 	rotate_dot:function(dot,radian,origin){
 		/* params
 			origin: point
 		*/
 		var s=this;
+		var new_dot={};
 		origin=origin||{x:0,y:0};
 		var new_radian=s.get_dot_radian(dot,origin)+radian;
-		s.set_dot_radian(dot,new_radian,origin);
+		var hypotenuse=gv.get_distance(dot,origin);
+		var opposite=hypotenuse*gv.sin(radian);
+		var adjacent=hypotenuse*gv.cos(radian);
+		new_dot.x=adjacent+origin.x;
+		new_dot.y=-opposite+origin.y;
+		return new_dot;
 	},
 	rotate:function(radian){
 		var s=this;

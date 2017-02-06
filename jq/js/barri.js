@@ -1,9 +1,10 @@
 
+
 function Barri(parent,option){
 	var s=this;
-	Barri.prototype.barris.push(s);
 	var option=option||{};
 	s.dom=jq('.proto.barri_wrap').clone().removeClass('proto').show();
+	s.type='barri';
 	s.x=option.x||450;
 	s.y=option.y||450;
 	s.width=100;

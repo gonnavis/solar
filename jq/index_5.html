@@ -62,33 +62,45 @@
 		点和边都可拖动。<br>
 		按住ctrl或shift键可旋转。<br>
 		<!-- x:<span class="x"></span> y:<span class="y"></span> -->
+		按住alt双击添加障碍物。<br>
 	</div>
 </div>
 
 <div class="options ">
 	<!-- <div class="option calc_solars">计算太阳能板数量</div> -->
-	<div class="option ">太阳能板总数： <span class="solars_total"></span></div>
-	<div class="option rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
-	<div class="option rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
-	<div class="option delete" >删除</div>
-	<div class="option solar_true_width">
-		太阳能板宽度
-		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+	<div class="option ">
+		太阳能板总数： <span class="solars_total"></span>
+		<button onclick="count_solars()">计算</button>
 	</div>
-	<div class="option solar_true_height">
-		太阳能板高度
-		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+
+	<div class="sub_options trape_options">
+		<div class="option delete" onclick="delete_trape()">删除</div>
+		<div class="option rotate_left iconfont icon-zuoxuanzhuan90" style="font-size: 26px;"></div>
+		<div class="option rotate_right iconfont icon-youxuanzhuan90" style="font-size: 26px;"></div>
+		<div class="option solar_true_width">
+			太阳能板宽度
+			<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+		</div>
+		<div class="option solar_true_height">
+			太阳能板高度
+			<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">mm</span>
+		</div>
+		<div class="option solar_lean">
+			太阳能板角度
+			<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
+			<button class="btn">方向</button>
+		</div>
+		<div class="option lean">
+			屋顶角度
+			<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
+			<button class="btn">方向</button>
+		</div>
 	</div>
-	<div class="option solar_lean">
-		太阳能板角度
-		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
-		<button class="btn">方向</button>
+
+	<div class="sub_options barri_options">
+		<div class="option delete" onclick="delete_barri()">删除</div>
 	</div>
-	<div class="option lean">
-		屋顶角度
-		<input type="number" name=""><span style="display: inline-block;margin-left: 2px;">°</span>
-		<button class="btn">方向</button>
-	</div>
+
 </div>
 
 

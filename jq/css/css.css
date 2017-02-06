@@ -39,12 +39,13 @@ html,body{width: 100%;height: 100%;border:0;padding: 0;margin:0;position: relati
 .trape_wrap .solars{pointer-events: none;}
 
 
-.label{    position: fixed; width: 200px; height: 90px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
+.label{    position: fixed; width: 200px; height: 110px; border: solid 2px; background: white; top: 0; left: 0; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;}
 
 .options{position: fixed; width: 900px; height: 90px; top: 0; left: 230px; line-height: 20px; text-align: center; user-select: none; font-size: 12px; padding-top: 10px;pointer-events: none;user-select:none;text-align: left;}
-.option{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;pointer-events: all;vertical-align: middle;}
-.option input{width:50px;}
-.option .btn{cursor: pointer;}
+.options .sub_options{display: none;}
+.options .option{border: solid 2px; background: white;padding:0 10px;line-height: 45px; display: inline-block;pointer-events: all;vertical-align: middle;}
+.options .option input{width:50px;}
+.options .option .btn{cursor: pointer;}
 
 
 

@@ -5,6 +5,8 @@ var barri=new Barri('.main',{
 	// d2:{x:120,y:298},
 	// d3:{x:-220,y:298},
 });
+barris.push(barri);
+barri.dom.attr('data-index',barris.length-1);
 
 jq('.main').dblclick(function(e){
 	if(e.altKey){
@@ -12,6 +14,9 @@ jq('.main').dblclick(function(e){
 			x:e.pageX,
 			y:e.pageY,
 		})
+		set_barri_act(barri.dom);
+		barris.push(barri);
+		barri.dom.attr('data-index',barris.length-1);
 		set_barri_act(barri.dom);
 	}
 })

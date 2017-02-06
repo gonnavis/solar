@@ -5,6 +5,8 @@ var trape=new Trape('.main',{
 	// d2:{x:120,y:298},
 	// d3:{x:-220,y:298},
 });
+trapes.push(trape);
+trape.dom.attr('data-index',trapes.length-1);
 set_trape_act(trape.dom);
 // var trape2=new Trape('.main',{x:270,y:270});
 
@@ -23,6 +25,8 @@ jq('.main').dblclick(function(e){
 			x:e.pageX,
 			y:e.pageY,
 		})
+		trapes.push(trape);
+		trape.dom.attr('data-index',trapes.length-1);
 		set_trape_act(trape.dom);
 	}
 })
@@ -32,8 +36,8 @@ jq(document).mousemove(function(){
 })
 
 jq('.option.calc_solars').click(function(){
-	for(var i=0;i<Trape.prototype.trapes.length;i++){
-		var trape=Trape.prototype.trapes[i];
+	for(var i=0;i<trapes.length;i++){
+		var trape=trapes[i];
 		trape.draw_solars();
 	}
 })
@@ -46,10 +50,6 @@ jq('.option.rotate_left').click(function(){
 jq('.option.rotate_right').click(function(){
 	act.rotate(-Math.PI/2);
 	act.draw();
-})
-
-jq('.option.delete').click(function(){
-	act.delete();
 })
 
 jq('.option.solar_true_width input').change(function(){

@@ -9,6 +9,7 @@ function init(){
 	bind_main();
 	bind_trape();
 	bind_barri();
+	bind_rotate_key();
 }
 function draw(){
 
@@ -81,4 +82,20 @@ function delete_barri(){
 		var barri=barris[i];
 		barri.dom.attr('data-index',i);
 	}
+}
+function bind_rotate_key(){
+	jq(document).on('keydown',function(e){
+		if(e.keyCode==16||e.keyCode==17/*shift*/){
+			act.dom.find('.mask').show();
+		}
+	})
+
+	jq(document).on('keyup',function(e){
+		if(e.keyCode==16||e.keyCode==17/*shift or ctrl*/){
+			for(var i=0;i<trapes.length;i++){
+				var trape=trapes[i];
+				trape.dom.find('.mask').hide();
+			}
+		}
+	})
 }

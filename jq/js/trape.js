@@ -67,6 +67,7 @@ Trape.prototype={
 	},
 	draw:function(){
 		var s=this;
+
 		s.get_data();
 
 		s.dom.find('.trape').css('transform','translate('+s.x+'px,'+s.y+'px) rotate('+-s.radian+'rad)');
@@ -92,7 +93,10 @@ Trape.prototype={
 
 		s.draw_polygon();
 		s.draw_dots();
+		s.calc_solars();
 		s.draw_solars();
+
+		s.get_solars_globle_position();
 	},
 	draw_polygon:function(){
 		var s=this;
@@ -138,7 +142,7 @@ Trape.prototype={
 		s.dom.find('.dot').eq(3).attr('cx',s.d3.x)
 		s.dom.find('.dot').eq(3).attr('cy',s.d3.y)
 	},
-	draw_solars:function(){
+	calc_solars:function(){
 		var s=this;
 
 		// init
@@ -298,6 +302,9 @@ Trape.prototype={
 
 		// count
 			// count_solars();
+	},
+	draw_solars:function(){
+		var s=this;
 
 		// draw
 			s.dom.find('.solar').remove();
@@ -1019,11 +1026,13 @@ Trape.prototype={
 	set_solar_width:function(width){
 		var s=this;
 		s.solar_true_width=parseFloat(width);
+		s.calc_solars();
 		s.draw_solars();
 	},
 	set_solar_height:function(height){
 		var s=this;
 		s.solar_true_height=parseFloat(height);
+		s.calc_solars();
 		s.draw_solars();
 	},
 }

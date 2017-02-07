@@ -60,6 +60,7 @@ function bind_barri(){
 	})
 }
 function count_solars(){
+	delete_solars_by_barri();
 	var solars_total=0;
 	for(var i=0;i<trapes.length;i++){
 		var trape=trapes[i];
@@ -99,4 +100,63 @@ function bind_rotate_key(){
 		}
 	})
 }
-// function
+function delete_solars_by_barri(){
+	for(var i=0;i<barris.length;i++){
+		var barri=barris[i];
+		for(var j=0;j<trapes.length;j++){
+			var trape=trapes[j];
+			for(var k=0;k<trape.solars.length;k++){
+				var solar=trape.solars[k];
+
+				for(var l=0;l<4;l++){
+					var dot=solar.global['d'+l];
+					var is_in=gv.point_in_polygon(
+						[dot.x,dot.y],
+						[
+							[barri.d0.x,barri.d0.y],
+							[barri.d1.x,barri.d1.y],
+							[barri.d2.x,barri.d2.y],
+							[barri.d3.x,barri.d3.y],
+						]
+					);
+					if(is_in){
+						solar.is_delete=true;
+					}
+				}
+
+				for(var l=0;l<4;l++){
+					var dot=barri['d'+l];
+					var is_in=gv.point_in_polygon(
+						[dot.x,dot.y],
+						[
+							[solar.global.d0.x,solar.global.d0.y],
+							[solar.global.d1.x,solar.global.d1.y],
+							[solar.global.d2.x,solar.global.d2.y],
+							[solar.global.d3.x,solar.global.d3.y],
+						]
+					);
+					if(is_in){
+						solar.is_delete=true;
+					}
+				}
+
+			}
+		}
+	}
+	for(var i=0;i<barris.length;i++){
+		var barri=barris[i];
+		for(var j=0;j<trapes.length;j++){
+			var trape=trapes[j];
+			for(var k=0;k<trape.solars.length;){
+				var solar=trape.solars[k];
+				if(solar.is_delete){
+					trape.solars.splice(k,1);
+				}
+				else{
+					k++;
+				}
+			}
+			trape.draw_solars();
+		}
+	}
+}

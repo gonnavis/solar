@@ -27,10 +27,32 @@ Barri.prototype={
 	draw:function(){
 		var s=this;
 
+		s.get_dots();
+
 		s.dom.css('left',s.x+'px');
 		s.dom.css('top',s.y+'px');
 		s.dom.css('width',s.width+'px');
 		s.dom.css('height',s.height+'px');
+	},
+	get_dots(){
+		var s=this;
+
+		s.d0={
+			x:s.x,
+			y:s.y,
+		}
+		s.d1={
+			x:s.x+s.width,
+			y:s.y,
+		}
+		s.d2={
+			x:s.x+s.width,
+			y:s.y+s.height,
+		}
+		s.d3={
+			x:s.x,
+			y:s.y+s.height,
+		}
 	},
 	bind_barri:function(){
 		var s=this;

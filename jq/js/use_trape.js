@@ -38,6 +38,7 @@ jq(document).mousemove(function(){
 jq('.option.calc_solars').click(function(){
 	for(var i=0;i<trapes.length;i++){
 		var trape=trapes[i];
+		trape.calc_solars();
 		trape.draw_solars();
 	}
 })

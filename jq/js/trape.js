@@ -305,6 +305,7 @@ Trape.prototype={
 				var solar=s.solars[i];
 
 				var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'polygon'); //Create a path in SVG's namespace
+				newElement.setAttribute("data-index",i);
 				newElement.setAttribute("class",'solar');
 				newElement.setAttribute("points",
 							solar.x+','+solar.y
@@ -330,26 +331,34 @@ Trape.prototype={
 		for(var i=0;i<s.solars.length;i++){
 			var solar=s.solars[i];
 
-			solar.d0={
+			solar.normal={};
+			solar.normal.d0={
 				x:solar.x,
 				y:solar.y,
 			}
-			solar.d1={
+			solar.normal.d1={
 				x:solar.x+s.solar_width,
 				y:solar.y,
 			}
-			solar.d2={
+			solar.normal.d2={
 				x:solar.x+s.solar_width,
 				y:solar.y+s.solar_height,
 			}
-			solar.d3={
+			solar.normal.d3={
 				x:solar.x,
 				y:solar.y+s.solar_height,
 			}
 
 			solar.local={};
 			for(var j=0;j<4;j++){
-				solar.local['d'+j]=s.rotate_dot(solar['d'+j],s.radian);
+				solar.local['d'+j]=s.rotate_dot(solar.normal['d'+j],s.radian);
+			}
+
+			solar.global={};
+			for(var j=0;j<4;j++){
+				solar.global['d'+j]={};
+				solar.global['d'+j].x=s.x+solar.local['d'+j].x;
+				solar.global['d'+j].y=s.y+solar.local['d'+j].y;
 			}
 		}
 	},
@@ -908,12 +917,17 @@ Trape.prototype={
 		var s=this;
 		var new_dot={};
 		origin=origin||{x:0,y:0};
-		var new_radian=s.get_dot_radian(dot,origin)+radian;
+		// var new_radian=s.get_dot_radian(dot,origin)+radian;
+		// var hypotenuse=gv.get_distance(dot,origin);
+		// var opposite=hypotenuse*gv.sin(radian);
+		// var adjacent=hypotenuse*gv.cos(radian);
+		// new_dot.x=adjacent+origin.x;
+		// new_dot.y=-opposite+origin.y;
 		var hypotenuse=gv.get_distance(dot,origin);
-		var opposite=hypotenuse*gv.sin(radian);
-		var adjacent=hypotenuse*gv.cos(radian);
-		new_dot.x=adjacent+origin.x;
-		new_dot.y=-opposite+origin.y;
+		var a=Math.atan(-(dot.y)/dot.x);
+		var b=s.mod_radian(a+radian);
+		new_dot.x=Math.cos(b)*hypotenuse;
+		new_dot.y=-(Math.sin(b)*hypotenuse);
 		return new_dot;
 	},
 	rotate:function(radian){

@@ -99,3 +99,4 @@ function bind_rotate_key(){
 		}
 	})
 }
+// function

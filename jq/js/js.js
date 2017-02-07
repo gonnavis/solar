@@ -44,7 +44,7 @@ function set_barri_act(dom){
 }
 function bind_main(){
 	jq('.main').click(function(){
-		clear_act();
+		// clear_act();
 	})
 }
 function bind_trape(){
@@ -101,6 +101,11 @@ function bind_rotate_key(){
 	})
 }
 function delete_solars_by_barri(){
+	for(var j=0;j<trapes.length;j++){
+		var trape=trapes[j];
+		trape.calc_solars();
+		trape.get_solars_globle_position();
+	}
 	for(var i=0;i<barris.length;i++){
 		var barri=barris[i];
 		for(var j=0;j<trapes.length;j++){
@@ -143,20 +148,17 @@ function delete_solars_by_barri(){
 			}
 		}
 	}
-	for(var i=0;i<barris.length;i++){
-		var barri=barris[i];
-		for(var j=0;j<trapes.length;j++){
-			var trape=trapes[j];
-			for(var k=0;k<trape.solars.length;){
-				var solar=trape.solars[k];
-				if(solar.is_delete){
-					trape.solars.splice(k,1);
-				}
-				else{
-					k++;
-				}
+	for(var j=0;j<trapes.length;j++){
+		var trape=trapes[j];
+		for(var k=0;k<trape.solars.length;){
+			var solar=trape.solars[k];
+			if(solar.is_delete){
+				trape.solars.splice(k,1);
 			}
-			trape.draw_solars();
+			else{
+				k++;
+			}
 		}
+		trape.draw_solars();
 	}
 }

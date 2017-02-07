@@ -96,7 +96,6 @@ Trape.prototype={
 		s.calc_solars();
 		s.draw_solars();
 
-		s.get_solars_globle_position();
 	},
 	draw_polygon:function(){
 		var s=this;

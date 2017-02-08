@@ -3,6 +3,9 @@
 var trapes=[];
 var barris=[];
 var act={};
+var V=SAT.Vector;
+var P=SAT.Polygon;
+
 init();
 
 function init(){
@@ -100,7 +103,7 @@ function bind_rotate_key(){
 		}
 	})
 }
-function delete_solars_by_barri(){
+function delete_solars_by_barri_old(){
 	for(var j=0;j<trapes.length;j++){
 		var trape=trapes[j];
 		trape.calc_solars();
@@ -143,6 +146,54 @@ function delete_solars_by_barri(){
 					if(is_in){
 						solar.is_delete=true;
 					}
+				}
+
+			}
+		}
+	}
+	for(var j=0;j<trapes.length;j++){
+		var trape=trapes[j];
+		for(var k=0;k<trape.solars.length;){
+			var solar=trape.solars[k];
+			if(solar.is_delete){
+				trape.solars.splice(k,1);
+			}
+			else{
+				k++;
+			}
+		}
+		trape.draw_solars();
+	}
+}
+function delete_solars_by_barri(){
+	for(var j=0;j<trapes.length;j++){
+		var trape=trapes[j];
+		trape.calc_solars();
+		trape.get_solars_globle_position();
+	}
+	for(var i=0;i<barris.length;i++){
+		var barri=barris[i];
+		for(var j=0;j<trapes.length;j++){
+			var trape=trapes[j];
+			for(var k=0;k<trape.solars.length;k++){
+				var solar=trape.solars[k];
+
+				var p_barri=new P(new V(),[
+					new V(barri.d0.x,-1*barri.d0.y),
+					new V(barri.d1.x,-1*barri.d1.y),
+					new V(barri.d2.x,-1*barri.d2.y),
+					new V(barri.d3.x,-1*barri.d3.y),
+				])
+
+				var p_solar=new P(new V(),[
+					new V(solar.global.d0.x,-1*solar.global.d0.y),
+					new V(solar.global.d1.x,-1*solar.global.d1.y),
+					new V(solar.global.d2.x,-1*solar.global.d2.y),
+					new V(solar.global.d3.x,-1*solar.global.d3.y),
+				])
+
+				if(SAT.testPolygonPolygon(p_barri,p_solar)){
+					solar.is_delete=true;
 				}
 
 			}

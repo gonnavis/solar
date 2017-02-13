@@ -19,7 +19,7 @@ function draw(){
 }
 function clear_act(){
 	jq('.trape_wrap, .barri_wrap').removeClass('act');
-	jq('.options .sub_options').hide();
+	jq('.option_wrap .sub_options').hide();
 }
 function set_trape_act(dom){
 	clear_act();
@@ -35,7 +35,7 @@ function set_trape_act(dom){
 	var solar_lean_degree=(gv.radian_to_degree(act.solar_lean_radian)).toFixed(2);
 	jq('.option.solar_lean input').val(solar_lean_degree);
 
-	jq('.options .trape_options').show();
+	jq('.option_wrap .trape_options').show();
 }
 function set_barri_act(dom){
 	clear_act();
@@ -43,7 +43,7 @@ function set_barri_act(dom){
 	var index=dom.attr('data-index');
 	act=barris[index];
 
-	jq('.options .barri_options').show();
+	jq('.option_wrap .barri_options').show();
 }
 function bind_main(){
 	jq('.main').click(function(){
@@ -179,17 +179,17 @@ function delete_solars_by_barri(){
 				var solar=trape.solars[k];
 
 				var p_barri=new P(new V(),[
-					new V(barri.d0.x,-1*barri.d0.y),
-					new V(barri.d1.x,-1*barri.d1.y),
-					new V(barri.d2.x,-1*barri.d2.y),
-					new V(barri.d3.x,-1*barri.d3.y),
+					new V(barri.d0.x,-barri.d0.y),
+					new V(barri.d1.x,-barri.d1.y),
+					new V(barri.d2.x,-barri.d2.y),
+					new V(barri.d3.x,-barri.d3.y),
 				])
 
 				var p_solar=new P(new V(),[
-					new V(solar.global.d0.x,-1*solar.global.d0.y),
-					new V(solar.global.d1.x,-1*solar.global.d1.y),
-					new V(solar.global.d2.x,-1*solar.global.d2.y),
-					new V(solar.global.d3.x,-1*solar.global.d3.y),
+					new V(solar.global.d0.x,-solar.global.d0.y),
+					new V(solar.global.d1.x,-solar.global.d1.y),
+					new V(solar.global.d2.x,-solar.global.d2.y),
+					new V(solar.global.d3.x,-solar.global.d3.y),
 				])
 
 				if(SAT.testPolygonPolygon(p_barri,p_solar)){

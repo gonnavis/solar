@@ -15,7 +15,7 @@ set_trape_act(trape.dom);
 // trape2.draw();
 // trape2.draw_solars();
 
-jq('.options').dblclick(function(e){
+jq('.option_wrap').dblclick(function(e){
 	e.stopPropagation();
 })
 
